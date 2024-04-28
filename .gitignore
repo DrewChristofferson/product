@@ -1,5 +1,4 @@
 data/*
 docs/*
 .env
-webscrape-venv/*
 my_project/utils/credentials.json
