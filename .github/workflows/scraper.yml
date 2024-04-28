@@ -2,7 +2,7 @@ name: Web Scraping
 
 on:
   schedule:
-    - cron: '20 8 * * *'   # Run the job every day at midnight
+    - cron: '27 7 * * *'   # Run the job every day at midnight
 
 jobs:
   scrape:
