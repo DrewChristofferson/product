@@ -290,7 +290,7 @@ def configure_companies_to_run():
     airtable_companies = get_companies()
     midpoint = len(airtable_companies) // 2
     # Split the list into two halves
-    first_half = airtable_companies[:midpoint]
+    first_half = airtable_companies[0]
     second_half = airtable_companies[midpoint:]
     single_company_test = airtable_companies[65:78]
 
