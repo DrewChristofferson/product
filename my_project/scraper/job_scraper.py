@@ -19,6 +19,7 @@ from selenium.common.exceptions import TimeoutException
 
 
 
+
 import csv
 
 RUN_TYPE = 'new_production'
@@ -261,6 +262,7 @@ def set_up_selenium_browser():
     # Set up Chrome options
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--referer=" + custom_referer)
+    chrome_options.add_argument("--headless=new")
     # Instantiate the Chrome driver with the custom options
     browser = webdriver.Chrome(options=chrome_options)
     return browser
@@ -294,7 +296,7 @@ def configure_companies_to_run():
     second_half = airtable_companies[midpoint:]
     single_company_test = airtable_companies[65:78]
 
-    return first_half
+    return airtable_companies
 
     # print(airtable_companies[0], len(airtable_companies))
 

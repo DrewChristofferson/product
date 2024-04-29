@@ -6,7 +6,6 @@ from .scraper.job_scraper import scrape_jobs
 from .scraper.job_details_scraper import scrape_details
 from .scraper.bulk_update_data import bulk_update
 from .old_files.json_to_csv import update_csv
-from .old_files.csv_to_sheets import update_google_sheet
 from .utils.csv_to_airtable import update_airtable
 from .utils.dedup import handle_duplicates
 from .companies.get_company_details import update_companies
@@ -24,8 +23,6 @@ def main():
         scrape_details()
     elif arguments[0] == "--bulk":
         bulk_update()
-    elif arguments[0] == "--google":
-        update_google_sheet()
     elif arguments[0] == "--full":
         end_to_end_run()
     elif arguments[0] == "--airtable":
