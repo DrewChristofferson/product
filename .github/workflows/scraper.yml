@@ -27,4 +27,5 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Web Scraping Job
-        run: python scripts/run_scrapper.py --jobs
+        run: python run_scrapper.py --jobs
+        working-directory: scripts/
