@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 
 def set_airtable_config(table):
     # Load environment variables from .env file
-    load_dotenv("../.env")
+    load_dotenv(".env")
 
     api_key = os.getenv("AIRTABLE_API_KEY")
     # print(api_key)

@@ -15,7 +15,7 @@ from .utils import has_integer_and_word_experience, write_to_json, check_if_elem
 from ..old_files.company_mapping import linkedInCompanyCodes as l
 from ..utils.logger import log
 
-PARENT_DIRECTORY_PATH = "../data/new_production"
+PARENT_DIRECTORY_PATH = "data/new_production"
 airtable_api_key = ''
 airtable_table = ''
 details_errors = []
@@ -45,7 +45,7 @@ companies_split_apply = [
 #     global airtable_api_key
 #     global airtable_table
 #     # Load environment variables from .env file
-#     load_dotenv("../.env")
+#     load_dotenv("".env")
 
 #     api_key = os.getenv("AIRTABLE_API_KEY")
 #     # print(api_key)
@@ -276,10 +276,10 @@ def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count_i
       'Accept-Language': 'en-US,en;q=0.8',
       'Connection': 'keep-alive'}
     # json_file_path, details_errors_path = fetch_most_recent_data()
-    json_file_path = f"../data/new_production/data/{company_name}.json"
-    details_errors_path = "../data/new_production/data/errors.json"
-    with open(json_file_path, 'r') as file:
-        data = json.load(file)
+    json_file_path = f"data/new_production/data/{company_name}.json"
+    details_errors_path = "data/new_production/data/errors.json"
+    # with open(json_file_path, 'r') as file:
+    #     data = json.load(file)
     # initial_run = True
     # while details_errors or initial_run:
     #     #set initial_company_execution to false for remaining re-runs needed

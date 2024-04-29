@@ -110,9 +110,9 @@ def create_data_dir(company_name):
     current_datetime_without_microseconds = current_datetime.replace(microsecond=0)
     current_datetime_without_microseconds = '2024-03-06 21:49:12'
     if RUN_TYPE == "production" or RUN_TYPE == "new_production":
-        folder_directory = f'../data/{RUN_TYPE}'
+        folder_directory = f'data/{RUN_TYPE}'
     else:
-        folder_directory = f'../data/{RUN_TYPE}/{current_datetime_without_microseconds}'
+        folder_directory = f'data/{RUN_TYPE}/{current_datetime_without_microseconds}'
     if os.path.exists(f'{folder_directory}/data/{company_name}.json'):
         pass
         # get_existing_job_ids(folder_directory, company_name)
@@ -255,7 +255,7 @@ def calc_start_time():
     current_datetime = datetime.now()
     start_time = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
     start_time = current_datetime.replace(microsecond=0)
-    run_log_file_path = f'../data/{RUN_TYPE}/run-logs/{start_time}.txt'
+    run_log_file_path = f'data/{RUN_TYPE}/run-logs/{start_time}.txt'
     log(run_log_file_path, f'Started scraping jobs at {start_time}\n')
 
 def set_up_selenium_browser():
