@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+      
+      - name: Use Airtable API Secret
+        run: echo ${{ secrets.AIRTABLE_API_KEY }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
