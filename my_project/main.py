@@ -40,7 +40,7 @@ def main():
     elif arguments[0] == "--compare-crunchbase":
         compare_with_crunchbase()
     else:
-        print("Please use a parameter")
+        scrape_jobs()
 
 
 # Additional logic and control flow here

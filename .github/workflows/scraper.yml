@@ -10,8 +10,6 @@ env:
   
 jobs:
   scrape:
-    permissions:
-      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -29,5 +27,4 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Web Scraping Job
-        run: python run_scrapper.py --jobs
-        shell: bash
+        run: python run_scrapper.py
