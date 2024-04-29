@@ -23,6 +23,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Activate venv
+        run: source venv/bin/activate
+
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
