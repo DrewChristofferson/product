@@ -28,4 +28,3 @@ jobs:
 
       - name: Run Web Scraping Job
         run: python run_scrapper.py --jobs
-        working-directory: scripts/
