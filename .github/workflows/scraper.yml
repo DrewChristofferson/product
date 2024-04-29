@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       
       - name: Use Airtable API Secret
         run: echo ${{ secrets.AIRTABLE_API_KEY }}
@@ -28,3 +28,5 @@ jobs:
 
       - name: Run Web Scraping Job
         run: python run_scrapper.py --jobs
+        working-directory: ${{ github.workspace }}
+        shell: bash
