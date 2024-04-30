@@ -252,11 +252,12 @@ def search_linkedin_for_jobs(company, browser):
 def calc_start_time():
     global start_time
     global run_log_file_path
-    current_datetime = datetime.now()
-    start_time = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
-    start_time = current_datetime.replace(microsecond=0)
+    start_datetime = datetime.now()
+    start_time = start_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    start_time = start_datetime.replace(microsecond=0)
     run_log_file_path = f'data/{RUN_TYPE}/run-logs/{start_time}.txt'
     log(run_log_file_path, f'Started scraping jobs at {start_time}\n')
+    return start_datetime
 
 def set_up_selenium_browser():
     # Set up Chrome options
@@ -277,6 +278,22 @@ def log_company_scrape(airtable_company_id):
         typecast=True
     )
 
+def calc_run_duration(start, end):
+    difference = end - start
+
+    # Calculate total number of seconds in the difference
+    total_seconds = difference.total_seconds()
+
+    # Calculate hours, minutes, and seconds
+    hours = int(total_seconds // 3600)
+    minutes = int((total_seconds % 3600) // 60)
+    seconds = int(total_seconds % 60)
+
+    # Format the difference as a string in the format "hours:minutes:seconds"
+    formatted_difference = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+    return(f"Total run duration (HH:MM:SS): {formatted_difference}")
+
 
 
 def reset_counting_vars():
@@ -294,9 +311,9 @@ def configure_companies_to_run():
     # Split the list into two halves
     first_half = airtable_companies[0]
     second_half = airtable_companies[midpoint:]
-    single_company_test = airtable_companies[65:78]
+    single_company_test = airtable_companies[600:601]
 
-    return airtable_companies
+    return single_company_test
 
     # print(airtable_companies[0], len(airtable_companies))
 
@@ -306,7 +323,7 @@ def scrape_jobs():
     all_airtable_jobs_count = 0
     all_airtable_deactivated_jobs_count = 0
 
-    calc_start_time()
+    run_start_datetime = calc_start_time()
     companies = configure_companies_to_run()
     browser = set_up_selenium_browser()
 
@@ -317,8 +334,7 @@ def scrape_jobs():
         company_airtable_jobs_count = 0
         company_airtable_deactivated_jobs_count = 0
 
-        current_datetime = datetime.now()
-        two_days_ago = current_datetime - timedelta(days=2)
+        two_days_ago = run_start_datetime - timedelta(days=2)
         two_days_ago = two_days_ago.strftime("%Y-%m-%d")
         today = datetime.now().strftime("%Y-%m-%d")
 
@@ -342,5 +358,6 @@ def scrape_jobs():
             print(f"already scraped {company_name} recently")
 
     log(run_log_file_path,f"Count jobs added to airtable: {all_airtable_jobs_count} | Count jobs decativated on airtable: {all_airtable_deactivated_jobs_count} \n")
-    log(run_log_file_path, f'Finished scraping jobs at {datetime.now()}')
+    log(run_log_file_path, f'Finished scraping jobs at {datetime.now().replace(microsecond=0)}\n')
+    log(run_log_file_path, calc_run_duration(run_start_datetime, datetime.now()))
     browser.quit()
