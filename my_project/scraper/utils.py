@@ -14,13 +14,16 @@ from dotenv import load_dotenv
 
 
 def set_airtable_config(table):
-    # Load environment variables from .env file
-    load_dotenv(".env")
 
-    api_key = os.getenv("AIRTABLE_API_KEY")
-    # print(api_key)
+    if "airtable_api_key" in os.environ:
+        #get github env var
+        API_KEY = os.environ["airtable_api_key"] 
+    else:
+        # Load local env var from .env file
+        load_dotenv(".env")
+        API_KEY = os.getenv("AIRTABLE_API_KEY")
 
-    airtable_api_key = Api(api_key)
+    airtable_api_key = Api(API_KEY)
     if table == 'companies':
         table_id = 'tblGwlPqq03yEQjV1'
     elif table == 'jobs':
