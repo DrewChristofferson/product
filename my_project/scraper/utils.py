@@ -16,11 +16,9 @@ from dotenv import load_dotenv
 def set_airtable_config(table):
 
     if "airtable_api_key" in os.environ:
-        print("exists", os.environ)
         #get github env var
         API_KEY = os.environ["airtable_api_key"] 
     else:
-        print(os.environ)
         # Load local env var from .env file
         load_dotenv(".env")
         API_KEY = os.getenv("AIRTABLE_API_KEY")
