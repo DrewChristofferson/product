@@ -190,9 +190,8 @@ def get_jobs_for_company(company_name):
         })
     return(existing_company_jobs)
 
-def parse_job_listing(job_listing, company_airtable_id):
+def parse_job_listing(job_listing, company_airtable_id, company_name):
     job_title = job_listing.find_element(By.CLASS_NAME, "base-search-card__title").text
-    company_name = job_listing.find_element(By.CLASS_NAME, "base-search-card__subtitle").text
     company_airtable_id = company_airtable_id
     location = job_listing.find_element(By.CLASS_NAME, "job-search-card__location").text
     job_url = job_listing.find_element(By.CLASS_NAME, "base-card__full-link").get_attribute('href')
@@ -239,24 +238,22 @@ def search_linkedin_for_jobs(company, browser):
         for job_listing in job_listings:
             job_listing_is_valid = detemine_job_listing_validity(job_listing)
             if job_listing_is_valid:
-                job, job_formatted = parse_job_listing(job_listing, company_airtable_id)
+                job, job_formatted = parse_job_listing(job_listing, company_airtable_id, company_name)
                 if job[0] not in existing_company_jobs and "Product Manager" in job[1] and job[5]:
                     postings_to_add[job_formatted["job_id"]] = job_formatted["values"]
 
         new_jobs, jobs_to_inactivate = identify_inactive_jobs(json_folder, existing_company_jobs, postings_to_add)
-        write_to_json(json_folder, postings_to_add, company_name)
+        # write_to_json(json_folder, postings_to_add, company_name)
     # else:
     #     print("No jobs at this company")
     return(new_jobs, jobs_to_inactivate)
 
 def calc_start_time():
-    global start_time
     global run_log_file_path
     start_datetime = datetime.now()
-    start_time = start_datetime.strftime("%Y-%m-%d %H:%M:%S")
     start_time = start_datetime.replace(microsecond=0)
     run_log_file_path = f'data/{RUN_TYPE}/run-logs/{start_time}.txt'
-    log(run_log_file_path, f'Started scraping jobs at {start_time}\n')
+    # log(run_log_file_path, f'Started scraping jobs at {start_time}\n')
     return start_datetime
 
 def set_up_selenium_browser():
@@ -311,7 +308,7 @@ def configure_companies_to_run():
     # Split the list into two halves
     first_half = airtable_companies[0]
     second_half = airtable_companies[midpoint:]
-    single_company_test = airtable_companies[600:601]
+    single_company_test = airtable_companies[0:50]
 
     return single_company_test
 
@@ -358,6 +355,6 @@ def scrape_jobs():
             print(f"already scraped {company_name} recently")
 
     log(run_log_file_path,f"Count jobs added to airtable: {all_airtable_jobs_count} | Count jobs decativated on airtable: {all_airtable_deactivated_jobs_count} \n")
-    log(run_log_file_path, f'Finished scraping jobs at {datetime.now().replace(microsecond=0)}\n')
-    log(run_log_file_path, calc_run_duration(run_start_datetime, datetime.now()))
+    # log(run_log_file_path, f'Finished scraping jobs at {datetime.now().replace(microsecond=0)}\n')
+    # log(run_log_file_path, calc_run_duration(run_start_datetime, datetime.now()))
     browser.quit()
