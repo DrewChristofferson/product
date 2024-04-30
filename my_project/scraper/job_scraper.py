@@ -44,15 +44,15 @@ run_log_file_path = ''
 class AuthwallBlocker(Exception):
     pass
 
-def get_existing_job_ids(path, company_name):
-    global existing_company_jobs
-    # print(f'{path}/data/{company_name}.json')
-    with open(f'{path}/data/{company_name}.json', 'r') as file:
-        data = json.load(file)
-    for key, value in data.items():
-        if "is_active" in value and value["is_active"] == True:
-            all_company_job_ids.append(key)
-            existing_company_jobs.append(key)
+# def get_existing_job_ids(path, company_name):
+#     global existing_company_jobs
+#     # print(f'{path}/data/{company_name}.json')
+#     with open(f'{path}/data/{company_name}.json', 'r') as file:
+#         data = json.load(file)
+#     for key, value in data.items():
+#         if "is_active" in value and value["is_active"] == True:
+#             all_company_job_ids.append(key)
+#             existing_company_jobs.append(key)
 
 def open_selenium_driver(driver, url, company_name, max_retries=4, delay=1):
     retries = 0
@@ -100,27 +100,27 @@ def scroll_to_all_job_listings(browser):
             pass
         # print("Element not found, scrolling down...")
 
-def create_data_dir(company_name):
-    #create new file directory for run data
-    global folder_directory 
-    global json_folder
+# def create_data_dir(company_name):
+#     #create new file directory for run data
+#     global folder_directory 
+#     global json_folder
 
-    current_datetime = datetime.now()
-    # Truncate the microseconds component
-    current_datetime_without_microseconds = current_datetime.replace(microsecond=0)
-    current_datetime_without_microseconds = '2024-03-06 21:49:12'
-    if RUN_TYPE == "production" or RUN_TYPE == "new_production":
-        folder_directory = f'data/{RUN_TYPE}'
-    else:
-        folder_directory = f'data/{RUN_TYPE}/{current_datetime_without_microseconds}'
-    if os.path.exists(f'{folder_directory}/data/{company_name}.json'):
-        pass
-        # get_existing_job_ids(folder_directory, company_name)
-    else:
-        with open(f'{folder_directory}/data/{company_name}.json', "w") as json_file:
-            json.dump({}, json_file, indent=4)
+#     current_datetime = datetime.now()
+#     # Truncate the microseconds component
+#     current_datetime_without_microseconds = current_datetime.replace(microsecond=0)
+#     current_datetime_without_microseconds = '2024-03-06 21:49:12'
+#     if RUN_TYPE == "production" or RUN_TYPE == "new_production":
+#         folder_directory = f'data/{RUN_TYPE}'
+#     else:
+#         folder_directory = f'data/{RUN_TYPE}/{current_datetime_without_microseconds}'
+#     if os.path.exists(f'{folder_directory}/data/{company_name}.json'):
+#         pass
+#         # get_existing_job_ids(folder_directory, company_name)
+#     else:
+#         with open(f'{folder_directory}/data/{company_name}.json', "w") as json_file:
+#             json.dump({}, json_file, indent=4)
 
-    json_folder = f'{folder_directory}/data/{company_name}.json'
+#     json_folder = f'{folder_directory}/data/{company_name}.json'
 
 def identify_inactive_jobs(directory, existing_jobs, postings_to_add):
     new_jobs = []
@@ -342,7 +342,7 @@ def scrape_jobs():
             print(f'Now scraping for product jobs at {company_name}\n')
             reset_counting_vars()
             #break out function to get existing jobs
-            create_data_dir(company_name)
+            # create_data_dir(company_name)
             existing_jobs = get_jobs_for_company(company_name)
             new_jobs, jobs_to_inactivate = search_linkedin_for_jobs(a_company, browser) 
             company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
