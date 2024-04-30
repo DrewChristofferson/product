@@ -4,7 +4,7 @@ import json
 from pyairtable import Api
 from pyairtable.formulas import match
 from ..utils.company_mapping_2 import airtable_codes as a
-from ..scraper.utils import write_to_json
+from ..scraper.utils import write_to_json, set_airtable_config
 
 
 def update_airtable():
@@ -50,7 +50,7 @@ def upload_all_jobs():
             update_company(company_name)
 
 def update_company(company_name, new_jobs):
-    table = get_table()
+    table = set_airtable_config("jobs")
     # for new_job in new_jobs:
     #     # if 'company_name' in new_job:
     #     #     del new_job['company_name']
