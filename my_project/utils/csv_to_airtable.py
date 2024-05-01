@@ -51,7 +51,8 @@ def upload_all_jobs():
 
 def update_company(company_name, new_jobs):
     table = set_airtable_config("jobs")
-    # for new_job in new_jobs:
+    # filtered_new_jobs = [record for record in new_jobs if not record.get("duplicate", False)]
+    # print(filtered_new_jobs)
     #     # if 'company_name' in new_job:
     #     #     del new_job['company_name']
     #     if 'company_airtable_id' in new_job:

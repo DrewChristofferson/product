@@ -308,9 +308,9 @@ def configure_companies_to_run():
     # Split the list into two halves
     first_half = airtable_companies[0]
     second_half = airtable_companies[midpoint:]
-    single_company_test = airtable_companies[0:50]
+    single_company_test = airtable_companies[10:20]
 
-    return single_company_test
+    return airtable_companies
 
     # print(airtable_companies[0], len(airtable_companies))
 

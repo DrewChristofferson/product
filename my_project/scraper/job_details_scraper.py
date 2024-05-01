@@ -293,9 +293,7 @@ def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count_i
             # value["is_active"] = False
             # value["job_closed_date"] = datetime.today().strftime("%m-%d-%Y")
             deactivate_airtable_record(job_to_inactivate['id'])
-            print(f"Set job listing {job_to_inactivate['job_title']} as inactive.")
     for new_job in new_jobs:
-        print(new_job)
         salary_range, description, posted_time_ago, experience_requirements, job_metadata, external_url, is_scrape_successful = fetch_job_details_with_retry(new_job['job_url'], new_job['job_title'], hdr, new_job['company_name'], run_log_file_path)
         if is_scrape_successful:
             if salary_range:
@@ -334,7 +332,6 @@ def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count_i
             # if job_metadata:
             #     for metadata_section in job_metadata:
             #         new_job[metadata_section[0]] = metadata_section[1]
-            print("Added new details to job!")
         else:
             print("Failed to add details to existing job, error scraping data")          
 
@@ -361,7 +358,6 @@ def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count_i
         #     # print(data)
         #     else:
         #         print("already done")
-        print("total errors: " + str(len(details_errors)))
     # write_to_json(json_file_path, data, company_name)
     return(jobs_deactivated_count, new_jobs)
 
