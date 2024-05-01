@@ -336,7 +336,7 @@ def scrape_jobs():
         today = datetime.now().strftime("%Y-%m-%d")
 
         if today != date_last_scraped:
-            print(f'Now scraping for product jobs at {company_name}\n')
+            # print(f'Now scraping for product jobs at {company_name}\n')
             reset_counting_vars()
             #break out function to get existing jobs
             # create_data_dir(company_name)
@@ -351,8 +351,8 @@ def scrape_jobs():
 
             log(run_log_file_path, f"{company_name}: {company_airtable_jobs_count} added | {company_airtable_deactivated_jobs_count} deactivated \n")
             log_company_scrape(company_airtable_id)
-        else:
-            print(f"already scraped {company_name} recently")
+        # else: 
+        #     print(f"already scraped {company_name} recently")
 
     log(run_log_file_path,f"Count jobs added to airtable: {all_airtable_jobs_count} | Count jobs decativated on airtable: {all_airtable_deactivated_jobs_count} \n")
     # log(run_log_file_path, f'Finished scraping jobs at {datetime.now().replace(microsecond=0)}\n')

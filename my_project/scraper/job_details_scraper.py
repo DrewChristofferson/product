@@ -106,10 +106,11 @@ def replace_login_redirect(url):
     pattern = r'login\?redirect=/[^/]+/'
     return(re.sub(pattern, '', url))
 
-def get_external_url(request_url, headers, company_name, max_retries=4):
+def get_external_url(request_url, headers, company_name, max_retries=2):
     retries = 0
     while retries <= max_retries:
         try:
+            retries += 1
             if company_name in companies_url_in_parameters:
                 request_url = get_parameter_url(request_url)
             request_url_clean = unquote(request_url)
@@ -129,7 +130,7 @@ def get_external_url(request_url, headers, company_name, max_retries=4):
                 print("Error: Unexpected status code for external url:", response.status_code)
                 if company_name in companies_on_url_whitelist:
                     return(unquote(request_url))
-            retries += 1
+            
         except requests.RequestException as e:
             # Handle any exceptions that occur during the request
             print("Error: An error occurred during the request for the external url:", e)

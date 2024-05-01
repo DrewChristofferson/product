@@ -88,3 +88,4 @@ def update_company(company_name, new_jobs):
     #create new airtable job in job_scraper
     #save airtableid as field in local db
     #anytime we update local db, we also need to make a call to airtable, referencing the airtable id
+
