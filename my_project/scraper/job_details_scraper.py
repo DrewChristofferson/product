@@ -333,7 +333,11 @@ def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count_i
             #     for metadata_section in job_metadata:
             #         new_job[metadata_section[0]] = metadata_section[1]
         else:
-            print("Failed to add details to existing job, error scraping data")          
+            print("Failed to add details to existing job, error scraping data")  
+    # remove incomplete jobs
+    for new_job in new_jobs[:]:
+        if not "company_linked" in new_job or not 'job_post_linkedin_url' in new_job:
+            new_jobs.remove(new_job)
 
         # for key, value in data.items():
         #     job_id = key

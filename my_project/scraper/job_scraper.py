@@ -68,7 +68,7 @@ def open_selenium_driver(driver, url, company_name, max_retries=4, delay=1):
                 max_retries_reached = True
                 raise AuthwallBlocker(f"Reached max retries ({max_retries}) for fetching job listings for {company_name}")
             elif has_authwall and not max_retries_reached:
-                print(f"Authwall. Retries left: {max_retries - retries}")
+                # print(f"Authwall. Retries left: {max_retries - retries}")
                 retries += 1
                 time.sleep(4)
         except Exception as e:
