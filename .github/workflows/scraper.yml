@@ -2,7 +2,7 @@ name: Web Scraping
 
 on:
   schedule:
-    - cron: '27 7 * * *'   # Run the job every day at midnight
+    - cron: '0 5 * * *'   # Run the job every day at midnight
   workflow_dispatch:
 
 env:

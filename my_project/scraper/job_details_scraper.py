@@ -223,13 +223,13 @@ def get_date(posted_time_ago):
         number_in_str = int(match.group())
             # day = 1, week = 2, month = 3
         if 'hour' in posted_time_ago or 'min' in posted_time_ago or 'sec' in posted_time_ago:
-            days_since = 0
+            days_since = 1
         elif 'day' in posted_time_ago:
-            days_since = number_in_str
+            days_since = number_in_str + 1
         elif 'week' in posted_time_ago:
-            days_since = number_in_str * 7
+            days_since = (number_in_str * 7) + 1
         elif 'month' in posted_time_ago:
-            days_since = number_in_str * 30
+            days_since = (number_in_str * 30) + 1
         else:
             return(None)
 

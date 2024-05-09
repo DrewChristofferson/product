@@ -168,7 +168,7 @@ def clean_experience_string(str):
 def get_levels(job_title):
     level = ''
     job_title_lower_case = job_title.lower()
-    if 'intern ' in job_title_lower_case or 'internship' in job_title_lower_case:
+    if 'intern ' in job_title_lower_case or 'internship' in job_title_lower_case or 'associate product manager intern' in job_title_lower_case or 'apm intern' in job_title_lower_case:
         level = 'Intern Product Manager'
     elif 'senior associate' in job_title_lower_case or 'sr associate' in job_title_lower_case:
         level = 'Senior Associate Product Manager'
