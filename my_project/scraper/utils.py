@@ -33,23 +33,7 @@ def set_airtable_config(table):
     airtable_table = airtable_api_key.table('appT4TIFvWbwAQ35G', table_id)
     return(airtable_table)
 
-def get_companies():
-    all_companies = []
-    airtable = set_airtable_config('companies')
-    formula = match({"Name": "Cloudflare"})
-    response = airtable.all(sort=["Name"], fields=["Name", "linkedin_id", "is_inactive", "Last Scrape Date"])
-    for company in response:
-        if 'linkedin_id' in company['fields'] and 'is_inactive' not in company['fields']:
-            all_companies.append({
-                "name": company['fields']['Name'],
-                "linkedin_id": company['fields']['linkedin_id'],
-                "airtable_id": company['id'],
-                "Last Scrape Date": company['fields']['Last Scrape Date'] if 'Last Scrape Date' in company['fields'] else None
-            })
-        else:
-            pass
-            # print(f"removed {company['fields']['Name']}")
-    return(all_companies)
+
 
 
 

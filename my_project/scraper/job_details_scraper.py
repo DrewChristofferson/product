@@ -11,7 +11,7 @@ from urllib.parse import unquote
 import re
 import time
 from bs4 import BeautifulSoup
-from .utils import has_integer_and_word_experience, write_to_json, check_if_element_exists, get_levels, get_experience_number, get_companies, set_airtable_config
+from .utils import has_integer_and_word_experience, write_to_json, check_if_element_exists, get_levels, get_experience_number, set_airtable_config
 from ..old_files.company_mapping import linkedInCompanyCodes as l
 from ..utils.logger import log
 
@@ -367,11 +367,11 @@ def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count_i
     return(jobs_deactivated_count, new_jobs)
 
 
-def scrape_details():
-    airtable_companies = get_companies()
-    for a_company in airtable_companies:
-        company_name = a_company['name']
-        company_code = a_company['linkedin_id']
-        company_airtable_id = a_company['airtable_id']
-        scrape_job_details(company_name)
+# def scrape_details():
+#     airtable_companies = get_companies()
+#     for a_company in airtable_companies:
+#         company_name = a_company['name']
+#         company_code = a_company['linkedin_id']
+#         company_airtable_id = a_company['airtable_id']
+#         scrape_job_details(company_name)
 
