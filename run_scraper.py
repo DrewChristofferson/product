@@ -1,7 +1,7 @@
 import sys
 # sys.path.append('../')  # Add parent directory to Python path
 
-from my_project import main
+from job_scraper_pipeline import main
 
 
 if __name__ == "__main__":
