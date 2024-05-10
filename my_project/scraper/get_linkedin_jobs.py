@@ -1,6 +1,7 @@
 import time
+from datetime import datetime, timedelta
 from ..utils.logger import log
-from .utils import detemine_job_listing_validity, check_if_element_exists, determine_authwall, create_job_unique_code
+from .utils import detemine_job_listing_validity, check_if_element_exists, determine_authwall, create_job_unique_code, set_airtable_config
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,9 +10,21 @@ from selenium.common.exceptions import TimeoutException
 class AuthwallBlocker(Exception):
     pass
 
+def reopen_job(job_id):
+    airtable_table = set_airtable_config('jobs')
+    response = airtable_table.update(
+        job_id, 
+        {
+            "is_active": True, 
+            "closed_date": None
+        }, 
+        typecast=True
+    )
+
 def identify_inactive_jobs(existing_jobs, postings_to_add):
     new_jobs = []
     jobs_to_inactivate = []
+    reactivated_jobs_count = 0
 
     #identify new jobs
     for key, value in postings_to_add.items():
@@ -22,23 +35,29 @@ def identify_inactive_jobs(existing_jobs, postings_to_add):
             # if posting_to_add_fields['job_title'] == existing_job['job_title']:
             #     print(posting_to_add_fields['company_name'], existing_job['company_name'])
             if posting_to_add_fields['job_title'] == existing_job['job_title'] and posting_to_add_fields['location'] in existing_job['locations'] and posting_to_add_fields['company_name'] == existing_job['company_name'][0]:
+                if existing_job["is_active"] == False:
+                    reopen_job(existing_job["id"])
+                    reactivated_jobs_count += 1
                 job_found_in_existing = True
         if job_found_in_existing == False:
             new_jobs.append(postings_to_add[posting_to_add_id])
             
     #identify inactive jobs
     for existing_job in existing_jobs:
-        job_found_in_new_postings = False
-        for key, value in postings_to_add.items():
-            posting_to_add_id = key
-            posting_to_add_fields = value
-            if posting_to_add_fields['job_title'] == existing_job['job_title'] and posting_to_add_fields['location'] in existing_job['locations'] and posting_to_add_fields['company_name'] == existing_job['company_name'][0]:
-                job_found_in_new_postings = True
-        if job_found_in_new_postings == False:
-            jobs_to_inactivate.append(existing_job)
+        if existing_job["is_active"] == False:
+            pass
+        else:
+            job_found_in_new_postings = False
+            for key, value in postings_to_add.items():
+                posting_to_add_id = key
+                posting_to_add_fields = value
+                if posting_to_add_fields['job_title'] == existing_job['job_title'] and posting_to_add_fields['location'] in existing_job['locations'] and posting_to_add_fields['company_name'] == existing_job['company_name'][0]:
+                    job_found_in_new_postings = True
+            if job_found_in_new_postings == False:
+                jobs_to_inactivate.append(existing_job)
 
     # print(jobs_to_inactivate)
-    return(new_jobs, jobs_to_inactivate)
+    return(new_jobs, jobs_to_inactivate, reactivated_jobs_count)
 
 def parse_job_listing(job_listing, company_airtable_id, company_name):
     job_title = job_listing.find_element(By.CLASS_NAME, "base-search-card__title").text
@@ -137,8 +156,8 @@ def get_linkedin_jobs(company, browser, run_log_file_path, existing_company_jobs
                 if job[0] not in existing_company_jobs and "Product Manager" in job[1] and job[5]:
                     postings_to_add[job_formatted["job_id"]] = job_formatted["values"]
 
-        new_jobs, jobs_to_inactivate = identify_inactive_jobs(existing_company_jobs, postings_to_add)
+        new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = identify_inactive_jobs(existing_company_jobs, postings_to_add)
         # write_to_json(json_folder, postings_to_add, company_name)
     # else:
     #     print("No jobs at this company")
-    return(new_jobs, jobs_to_inactivate)
+    return(new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count)

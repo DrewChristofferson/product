@@ -53,6 +53,7 @@ def log_company_scrape(airtable_company_id):
 def scrape_jobs():
     all_airtable_jobs_count = 0
     all_airtable_deactivated_jobs_count = 0
+    all_airtable_reactivated_jobs_count = 0
 
     run_start_datetime, run_log_file_path = calc_start_time()
     companies = pull_companies()
@@ -64,6 +65,7 @@ def scrape_jobs():
         company_airtable_id = a_company['airtable_id']
         company_airtable_jobs_count = 0
         company_airtable_deactivated_jobs_count = 0
+        company_airtable_reactivated_jobs_count = 0
 
         two_days_ago = run_start_datetime - timedelta(days=2)
         two_days_ago = two_days_ago.strftime("%Y-%m-%d")
@@ -73,19 +75,21 @@ def scrape_jobs():
             # print(f'Now scraping for product jobs at {company_name}\n')
             #break out function to get existing jobs
             # create_data_dir(company_name)
-            existing_jobs = pull_existing_jobs_for_company(company_name)
-            new_jobs, jobs_to_inactivate = get_linkedin_jobs(a_company, browser, run_log_file_path, existing_jobs) 
+            existing_jobs, active_existing_company_jobs = pull_existing_jobs_for_company(company_name)
+            new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = get_linkedin_jobs(a_company, browser, run_log_file_path, existing_jobs) 
             company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
             new_jobs_dedupped = dedup_logic(company_name, new_jobs_full_details, existing_jobs)
             company_airtable_jobs_count = update_airtable(company_name, new_jobs_dedupped)
             
             all_airtable_jobs_count += company_airtable_jobs_count
             all_airtable_deactivated_jobs_count += company_airtable_deactivated_jobs_count
+            all_airtable_reactivated_jobs_count += company_airtable_reactivated_jobs_count
 
-            log(run_log_file_path, f"{company_name}: {company_airtable_jobs_count} added | {company_airtable_deactivated_jobs_count} deactivated \n")
+
+            log(run_log_file_path, f"{company_name}: {company_airtable_jobs_count} added | {company_airtable_deactivated_jobs_count} deactivated | {company_airtable_reactivated_jobs_count} reactivated \n")
             log_company_scrape(company_airtable_id)
         # else: 
         #     print(f"already scraped {company_name} recently")
 
-    log(run_log_file_path,f"Count jobs added to airtable: {all_airtable_jobs_count} | Count jobs decativated on airtable: {all_airtable_deactivated_jobs_count} \n")
+    log(run_log_file_path,f"Count jobs added to airtable: {all_airtable_jobs_count} | Count jobs decativated on airtable: {all_airtable_deactivated_jobs_count} | Count jobs recativated on airtable: {all_airtable_reactivated_jobs_count}\n")
     browser.quit()

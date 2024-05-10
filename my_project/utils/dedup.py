@@ -20,14 +20,17 @@ def dedup_logic(company_name, new_jobs, existing_jobs):
     while i < len(new_jobs):
         new_job = new_jobs[i]
         for existing_job in existing_jobs:
-            if (new_job['job_title'] == existing_job['job_title'] and
-                new_job['experience_desc'] == existing_job['experience_desc'] and
-                new_job['locations'][0] not in existing_job['locations']):
-                
-                add_loc_to_existing_job(new_job['locations'][0], existing_job)
-                new_jobs.pop(i)
-                i -= 1  # Decrementing to stay at the same index after popping an element
-                break  # Exit the inner loop once a match is found
+            if existing_job["is_active"] == False:
+                pass
+            else:
+                if (new_job['job_title'] == existing_job['job_title'] and
+                    new_job['experience_desc'] == existing_job['experience_desc'] and
+                    new_job['locations'][0] not in existing_job['locations']):
+                    
+                    add_loc_to_existing_job(new_job['locations'][0], existing_job)
+                    new_jobs.pop(i)
+                    i -= 1  # Decrementing to stay at the same index after popping an element
+                    break  # Exit the inner loop once a match is found
         i += 1  # Move to the next index in the outer loop
     
     # Determine whether any new jobs are duplicates with each other
