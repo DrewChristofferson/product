@@ -5,8 +5,8 @@ from pyairtable.formulas import match
 def pull_companies():
     all_companies = []
     airtable = set_airtable_config('companies')
-    formula = match({"Name": "Zoom"})
-    response = airtable.all(formula=formula, sort=["Name"], fields=["Name", "linkedin_id", "is_inactive", "Last Scrape Date"])
+    # formula = match({"Name": "Zoom"})
+    response = airtable.all(sort=["Name"], fields=["Name", "linkedin_id", "is_inactive", "Last Scrape Date"])
     for company in response:
         if 'linkedin_id' in company['fields'] and 'is_inactive' not in company['fields']:
             all_companies.append({
