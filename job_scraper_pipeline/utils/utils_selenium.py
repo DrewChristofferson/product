@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 import time
+from .utils_general import log  
 
 
 class AuthwallBlocker(Exception):

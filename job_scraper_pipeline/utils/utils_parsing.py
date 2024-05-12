@@ -1,4 +1,4 @@
-from .utils import create_job_unique_code
+from .utils_general import create_job_unique_code
 from datetime import datetime, timedelta
 import requests
 from urllib.parse import unquote
@@ -206,7 +206,6 @@ def get_date(posted_time_ago):
     else:
         return(None)
     
-
 
 def check_active_job(url, headers):
     job_details_page_content = get_url_content(url, headers)

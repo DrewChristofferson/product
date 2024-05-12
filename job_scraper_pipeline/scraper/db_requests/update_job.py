@@ -15,13 +15,14 @@ def deactivate_airtable_record(airtable_record_id, jobs_deactivated_count):
     jobs_deactivated_count += 1
     return(jobs_deactivated_count)
 
-def reopen_job(job_id):
+def reopen_job(job_id, new_linkedin_url):
     airtable_table = set_airtable_config('jobs')
     response = airtable_table.update(
         job_id, 
         {
             "is_active": True, 
-            "closed_date": None
+            "closed_date": None,
+            "job_post_linkedin_url": new_linkedin_url
         }, 
         typecast=True
     )

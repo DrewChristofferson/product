@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
-from .utils import calc_start_time, log
-from .utils_selenium import set_up_selenium_browser
+from ..utils.utils_general import calc_start_time, log
+from ..utils.utils_selenium import set_up_selenium_browser
 from .sub_pipelines.job_details_scraper import scrape_job_details
+from .sub_pipelines.job_details_scraper_company import scrape_job_details_apple
+from .sub_pipelines.get_company_page_jobs import get_company_page_jobs
 from .db_requests.get_jobs import pull_existing_jobs_for_company
 from .sub_pipelines.get_linkedin_jobs import get_linkedin_jobs
 from .db_requests.get_companies import pull_companies
@@ -37,8 +39,16 @@ def scrape_jobs():
             #break out function to get existing jobs
             # create_data_dir(company_name)
             existing_jobs = pull_existing_jobs_for_company(company_name)
-            new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = get_linkedin_jobs(a_company, browser, run_log_file_path, existing_jobs) 
-            company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
+            if a_company['linkedin_id']:
+                new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = get_linkedin_jobs(a_company, browser, run_log_file_path, existing_jobs) 
+                company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
+
+            elif a_company['careers_page_url']:
+                print("scrapping nonlinkedin for ", company_name)
+                new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = get_company_page_jobs(a_company, browser, run_log_file_path, existing_jobs) 
+                company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details_apple(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
+
+
             new_jobs_dedupped = dedup_jobs(company_name, new_jobs_full_details, existing_jobs)
             company_airtable_jobs_count = add_new_jobs(new_jobs_dedupped)
             

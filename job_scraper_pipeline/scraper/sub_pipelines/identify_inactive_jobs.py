@@ -15,7 +15,7 @@ def identify_inactive_jobs(existing_jobs, postings_to_add):
             #     print(posting_to_add_fields['company_name'], existing_job['company_name'])
             if posting_to_add_fields['job_title'] == existing_job['job_title'] and posting_to_add_fields['location'] in existing_job['locations'] and posting_to_add_fields['company_name'] == existing_job['company_name'][0]:
                 if existing_job["is_active"] == False:
-                    reopen_job(existing_job["id"])
+                    reopen_job(existing_job["id"], posting_to_add_fields['job_url'])
                     reactivated_jobs_count += 1
                 job_found_in_existing = True
         if job_found_in_existing == False:
