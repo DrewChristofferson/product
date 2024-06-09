@@ -16,7 +16,8 @@ def pull_existing_jobs_for_company(company_name):
             'company_name': job["fields"]['company_name'], 
             'job_post_url': job["fields"]['job_post_url'], 
             'job_post_linkedin_url': job["fields"]['job_post_linkedin_url'] if 'job_post_linkedin_url' in job["fields"] else None,
-            'experience_desc': job["fields"]['experience_desc'] if 'experience_desc' in job["fields"] else None
+            'experience_desc': job["fields"]['experience_desc'] if 'experience_desc' in job["fields"] else None,
+            'years_experience_req': job["fields"]['years_experience_req'] if 'years_experience_req' in job["fields"] else None
         })
 
     return(all_existing_company_jobs)

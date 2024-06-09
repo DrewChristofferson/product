@@ -7,6 +7,7 @@ def set_airtable_config(table):
     AIRTABLE_BASE_ID = 'appT4TIFvWbwAQ35G'
     AIRTABLE_COMPANIES_TABLE_ID = 'tblGwlPqq03yEQjV1'
     AIRTABLE_JOBS_TABLE_ID = 'tbliHYwp5pTrRxqJk'
+    AIRTABLE_INVESTORS_TABLE_ID = 'tblyBpDbT7x1nQSho'
 
     if "airtable_api_key" in os.environ:
         #get github env var
@@ -21,6 +22,8 @@ def set_airtable_config(table):
         table_id = AIRTABLE_COMPANIES_TABLE_ID
     elif table == 'jobs':
         table_id = AIRTABLE_JOBS_TABLE_ID
+    elif table == 'investors':
+        table_id = AIRTABLE_INVESTORS_TABLE_ID
     else:
         table_id = None
     airtable_table = airtable_api_key.table(AIRTABLE_BASE_ID, table_id)

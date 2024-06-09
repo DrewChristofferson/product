@@ -5,6 +5,8 @@ from urllib.parse import unquote
 import re
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+from fake_useragent import UserAgent
+
 
 
 # Linkedin 'apply now' url are typically infused with a bunch of junk so we first try to make a request and get the url in the response
@@ -49,12 +51,22 @@ def parse_job_listing(job_listing, company_airtable_id, company_name):
     return(job, job_formatted)
 
 
-def get_url_content(url, headers, max_retries=4):
+def get_url_content(url, headers=None, max_retries=4):
     retries = 0
+    if headers is None:
+        ua=UserAgent()
+        headers = {
+            'User-Agent': ua.random,
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+            'Accept-Encoding': 'none',
+            'Accept-Language': 'en-US,en;q=0.8',
+            'Connection': 'keep-alive'
+        }
     while retries <= max_retries:
         try:
             retries += 1
-            job_detail_page = requests.get(url)
+            job_detail_page = requests.get(url, headers=headers)
             # time.sleep(random.uniform(1,3))
             # Check if the request was successful (status code 200)
             if job_detail_page.status_code == 200:
@@ -62,6 +74,7 @@ def get_url_content(url, headers, max_retries=4):
                 soup = BeautifulSoup(job_detail_page.content, "html.parser")
                 return(soup)
             else:
+                print(job_detail_page.status_code)
                 if max_retries == retries:
                     print("reached max retries")
                     return(None)

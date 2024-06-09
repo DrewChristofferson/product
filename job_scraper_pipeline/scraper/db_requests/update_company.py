@@ -10,3 +10,23 @@ def log_company_scrape(airtable_company_id):
         }, 
         typecast=True
     )
+
+def add_investors(airtable_company_id, list_investors):
+    airtable_table = set_airtable_config('companies')
+    response = airtable_table.update(
+        airtable_company_id, 
+        {
+            "investors": list_investors
+        }, 
+        typecast=True
+    )
+    # print(response)
+
+def update_company(airtable_company_id, fields):
+    airtable_table = set_airtable_config('companies')
+    response = airtable_table.update(
+        airtable_company_id, 
+        fields, 
+        typecast=True
+    )
+    return(response)

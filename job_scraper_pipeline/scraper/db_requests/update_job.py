@@ -15,17 +15,31 @@ def deactivate_airtable_record(airtable_record_id, jobs_deactivated_count):
     jobs_deactivated_count += 1
     return(jobs_deactivated_count)
 
-def reopen_job(job_id, new_linkedin_url):
+def reopen_job(job_id, new_url):
     airtable_table = set_airtable_config('jobs')
-    response = airtable_table.update(
-        job_id, 
-        {
-            "is_active": True, 
-            "closed_date": None,
-            "job_post_linkedin_url": new_linkedin_url
-        }, 
-        typecast=True
-    )
+    if 'linkedin' in new_url:
+        response = airtable_table.update(
+            job_id, 
+            {
+                "is_active": True, 
+                "closed_date": None,
+                "job_post_url": new_url,
+                "job_post_linkedin_url": new_url
+            }, 
+            typecast=True
+        )
+    else:
+        response = airtable_table.update(
+            job_id, 
+            {
+                "is_active": True, 
+                "closed_date": None,
+                "job_post_url": new_url,
+                "job_post_company_url": new_url
+
+            }, 
+            typecast=True
+        )
 
 def add_loc_to_existing_job(new_location, existing_job):
     airtable_table = set_airtable_config('jobs')

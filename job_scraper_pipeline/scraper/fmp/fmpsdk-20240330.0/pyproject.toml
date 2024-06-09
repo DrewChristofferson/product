@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "fmpsdk"
+version = "20240330.0"
+description = ""
+authors = ["Dax Mickelson <github@daxm.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "*"
+requests = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
