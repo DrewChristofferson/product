@@ -7,7 +7,7 @@ def pull_companies():
     airtable = set_airtable_config('companies')
     formula = match({"name": "Salesforce"})
     response = airtable.all(
-        formula=formula,
+        # formula=formula,
         sort=["name"], 
         fields=[
             "name", 
