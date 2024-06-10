@@ -1,6 +1,8 @@
 from .utils.set_openai_config import set_open_config
+from ...utils.utils_general import is_valid_json
 from datetime import datetime
 import json
+import time
 
 def test_openai(job_posting):
     client = set_open_config()
@@ -56,7 +58,24 @@ def get_investors(company_name, investors):
 
     return(json_response)
 
-def gpt_get_company_info(company_name, company_website):
+def gpt_get_company_info(company_name, company_website, max_retries=2):
+    retries = 0
+    while retries <= max_retries:
+        retries += 1
+        response_content = make_company_info_request(company_name, company_website)
+        if is_valid_json(response_content):
+            json_response = json.loads(response_content)
+            return json_response
+        else:
+            if max_retries == retries:
+                print("reached max retries")
+                return(None)
+            response_content = make_company_info_request(company_name, company_website)
+
+
+
+
+def make_company_info_request(company_name, company_website):
     client = set_open_config()
 
     completion = client.chat.completions.create(
@@ -69,10 +88,10 @@ def gpt_get_company_info(company_name, company_website):
         You will need to respond in a JSON format (please don't include '\n' in the json) with the following fields - 
         name: Name of the company, 
         formerly_known_as: List of names that the company was formerly known as, 
-        website: Home page url for the company, 
-        careers_page: The url of the company's current job openings, 
+        website: Home page URL for the company, 
+        careers_page: The URL of the company's current job openings, 
         hq_city: The city of the company headquarters, 
-        hq_state: If hq is in the United States, return the state of the company headquarters in its two-letter abbreviation (e.g., CA, NY, TX), 
+        hq_state: If the company headquarters is in the United States, return the state of the company headquarters in its two-letter abbreviation (e.g., CA, NY, TX), 
         hq_country: The country of the company headquarters (return 'United States' if the country is the US), 
         description: A paragraph summarizing what the company is, 
         long_description: A longer multi-paragraph description that goes more in depth on the products and services the company offers, 
@@ -97,7 +116,8 @@ def gpt_get_company_info(company_name, company_website):
         acquired_year: Year the company was acquired if applicable, 
         benefits: List of the top benefits or noteworthy perks that the company offers (maximum 10 benefits/perks), 
         equity_series: The last equity series raised - pre-IPO companies only (select from Seed, or Series A-Z), 
-        total_funding: String for the total funding a company has received - pre_IPO companies only (select from 'less than $100M', '$101M to $250M', '251M to $500M', '$501M to $1B', '$1B to $2B', or '$2B+'), company_valuation: String for the company valuation - pre_IPO companies only (select from 'less than $1B', '$1.1B to $2B', '$2.1B to $3B', '$3.1B to $5B', '$5.1B to $10B', or '$10B+'). 
+        total_funding: String for the total funding a company has received - pre_IPO companies only (select from 'less than $100M', '$101M to $250M', '251M to $500M', '$501M to $1B', '$1B to $2B', or '$2B+'), 
+        company_valuation: String for the company valuation - pre_IPO companies only (select from 'less than $1B', '$1.1B to $2B', '$2.1B to $3B', '$3.1B to $5B', '$5.1B to $10B', or '$10B+'). 
         
         Also, please make sure your response is valid JSON (e.g., no unnecessary whitespace or non-ASCII characters). Don't include ```json in your response. If you can't find information for a field, assign a value of null instead.
         """
@@ -105,11 +125,10 @@ def gpt_get_company_info(company_name, company_website):
         {"role": "user", "content": f"Please find me the details for {company_name}. The website for the company is {company_website}. If you're not sure about a field put a value of null for it. Don't include ```json in your response."}
     ]
     )
-    content_read = completion.choices[0].message.content
-    print(content_read)
-    json_response = json.loads(completion.choices[0].message.content)
 
-    return(json_response)
+    res_msg = completion.choices[0].message.content
+    print(res_msg)
+    return(res_msg)
 
 
 

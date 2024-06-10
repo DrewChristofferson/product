@@ -1,5 +1,6 @@
 import hashlib
 from datetime import datetime
+import json
 
 def calc_start_time(run_log_file_path):
     start_datetime = datetime.now()
@@ -21,6 +22,13 @@ def write_to_txt(file_path_in, data):
     with open(file_path_in, "a") as file:
         # Write some text to the file
         file.write(data)
+
+def is_valid_json(content):
+    try:
+        json.loads(content)
+    except ValueError as e:
+        return False
+    return True
 
 
 
