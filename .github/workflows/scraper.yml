@@ -2,12 +2,12 @@ name: Web Scraping
 
 on:
   schedule:
-    - cron: '0 5 * * *'   # Run the job every day at midnight
+    - cron: "0 13 * * *" # Run the job every day at midnight
   workflow_dispatch:
 
 env:
   airtable_api_key: ${{ secrets.AIRTABLE_API_KEY }}
-  
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
@@ -19,8 +19,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
-          cache: 'pip' #caching pip dependencies
+          python-version: "3.8"
+          cache: "pip" #caching pip dependencies
 
       - name: Install Dependencies
         run: pip install -r requirements.txt
