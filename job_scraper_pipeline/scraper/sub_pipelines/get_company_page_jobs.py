@@ -38,20 +38,22 @@ def parse_job_listings(job_listings, company_airtable_id, company_name, existing
     # todo: refactor this
     output_list_of_jobs = []
     company_airtable_id = company_airtable_id
+    print(job_listings[0].get_attribute("innerHTML"))
     for job_listing in job_listings:
-        # print(job_listing.get_attribute("innerHTML"))
         # wait = WebDriverWait(browser, 10)
         # link_element = wait.until(EC.presence_of_element_located((By.TAG_NAME, "a")))
         try:
             if url_html:
                 job_url_raw = job_listing.find_element(By.XPATH, url_html)
                 job_url = job_url_raw.get_attribute("href")
+                print(job_url)
             else:
                 job_url = job_listing.get_attribute("href")
 
             if title_html:
                 job_title_raw = job_listing.find_element(By.XPATH, title_html)
                 job_title = job_title_raw.text
+                print(job_title)
             else:
                 job_title = job_listing.text
 

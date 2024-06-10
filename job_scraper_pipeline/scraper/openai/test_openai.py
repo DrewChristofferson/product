@@ -102,7 +102,7 @@ def make_company_info_request(company_name, company_website):
         office_locations: List of cities where this company has offices (just return city name, don't include state!), 
         year_founded: The year of the company's founding, 
         founders: The list of founders for the company, 
-        founder_resume: The background/resume of each founder highlighting their education and experience before starting the company (one paragraph per founder and don't use colon notation),
+        founder_resume: A list of background/resumes for each founder highlighting their education and experience before starting the company (One list item per founder, each item should be one paragraph, and don't use colon notation),
         ceo_name: The name of the current CEO of the company,
         is_ceo_founder: whether the CEO is one of the company founders (return 'YES' or 'NO'), 
         ceo_resume: A background/resume of the CEO highlighting their education and experience before becoming the CEO of the company (don't use colon notation and if the ceo is also a founder, you can use the same paragraph as the one for the founder background),

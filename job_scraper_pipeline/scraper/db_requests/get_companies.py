@@ -5,9 +5,9 @@ from pyairtable.formulas import match
 def pull_companies():
     all_companies = []
     airtable = set_airtable_config('companies')
-    formula = match({"name": "Yahoo"})
+    formula = match({"name": "Salesforce"})
     response = airtable.all(
-        # formula=formula,
+        formula=formula,
         sort=["name"], 
         fields=[
             "name", 
