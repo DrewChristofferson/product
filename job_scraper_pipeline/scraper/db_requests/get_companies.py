@@ -22,11 +22,13 @@ FIELDS_TO_RETURN = [
             "office_locations"
         ]
 
-def pull_companies(companies_filter):
+def pull_companies(companies_filter=None):
+    if companies_filter and len(companies_filter) < 1:
+        companies_filter = None
     all_companies = []
     all_companies_raw = []
     airtable = set_airtable_config('companies')
-    if not companies_filter:
+    if companies_filter is None:
         response = airtable.all(
             sort=["name"], 
             fields=FIELDS_TO_RETURN
