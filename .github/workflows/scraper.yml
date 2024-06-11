@@ -2,7 +2,7 @@ name: Web Scraping
 
 on:
   schedule:
-    - cron: "0 13 * * *" # Run the job every day at midnight
+    - cron: "0 5 * * *" # Run the job every day at midnight
   workflow_dispatch:
 
 env:
@@ -26,4 +26,4 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Web Scraping Job
-        run: python run_scraper.py --jobs
+        run: python run_scraper.py jobs

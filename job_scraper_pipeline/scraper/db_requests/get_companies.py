@@ -1,15 +1,7 @@
 from .utils.set_airtable_configs import set_airtable_config
 from pyairtable.formulas import match
 
-
-def pull_companies():
-    all_companies = []
-    airtable = set_airtable_config('companies')
-    formula = match({"name": "Salesforce"})
-    response = airtable.all(
-        # formula=formula,
-        sort=["name"], 
-        fields=[
+FIELDS_TO_RETURN = [
             "name", 
             "linkedin_id", 
             "website",
@@ -22,9 +14,39 @@ def pull_companies():
             "job_details_xpath",
             "next_btn_xpath",
             "investors",
-            "hq_country"
-        ])
-    for company in response:
+            "hq_country",
+            "ticker_symbol"
+        ]
+
+def pull_companies(companies_filter):
+    all_companies = []
+    all_companies_raw = []
+    airtable = set_airtable_config('companies')
+    if not companies_filter:
+        response = airtable.all(
+            sort=["name"], 
+            fields=FIELDS_TO_RETURN
+            )
+        all_companies_raw = response
+    elif len(companies_filter) == 1:
+        formula = match({"name": companies_filter[0]})
+        response = airtable.all(
+            formula=formula,
+            fields=FIELDS_TO_RETURN
+            )
+        all_companies_raw = response
+    elif len(companies_filter) > 1:
+        response = airtable.all(
+            sort=["name"], 
+            fields=FIELDS_TO_RETURN
+            )
+        for company in response:
+            if company['fields']['name'] in companies_filter:
+                all_companies_raw.append(company)
+    else:
+        print("Invalid company filter")
+        return
+    for company in all_companies_raw:
         if 'is_inactive' not in company['fields']:
             response = all_companies.append({
                 "name": company['fields']['name'],
@@ -39,13 +61,14 @@ def pull_companies():
                 "job_details_xpath": company['fields']['job_details_xpath'] if 'job_details_xpath' in company['fields'] else None,
                 "next_btn_xpath": company['fields']['next_btn_xpath'] if 'next_btn_xpath' in company['fields'] else None,
                 "investors": company['fields']['investors'] if 'investors' in company['fields'] else None,
-                "hq_country": company['fields']['hq_country'] if 'hq_country' in company['fields'] else None
-
+                "hq_country": company['fields']['hq_country'] if 'hq_country' in company['fields'] else None,
+                "ticker_symbol": company['fields']['ticker_symbol'] if 'ticker_symbol' in company['fields'] else None
             })
 
         else:
             pass
             # print(f"removed {company['fields']['Name']}")
+    # print(all_companies)
     return(all_companies)
 
 

@@ -1,7 +1,7 @@
 from ..scraper.db_requests.get_companies import pull_companies, get_one_company
 from ..scraper.db_requests.get_investors import pull_investors
 from ..scraper.db_requests.update_company import add_investors, update_company
-from ..scraper.openai.test_openai import get_investors, gpt_get_company_info
+from ..scraper.openai.test_openai import get_investors, gpt_get_company_info, gpt_get_company_metrics
 from ..utils.utils_parsing import get_url_content, get_element_text
 import json
 from datetime import datetime
@@ -11,10 +11,7 @@ import re
 
 def bulk_update():
     update_existing_company_data()
-    # onboard_company("CarGurus")
     
-    # TDOD: update_third_party_ratings("https://www.comparably.com/companies/cargurus")
-
 
 def onboard_company(company_name, company_website=None):
     company_airtable = get_one_company(company_name)
@@ -35,11 +32,12 @@ def update_existing_company_data():
             gpt_response = gpt_get_company_info(company['name'], company['website'])
             updated_company = update_company(company['airtable_id'], gpt_response)
 
-def update_third_party_ratings(url):
-    content = get_url_content(url)
-    print(content)
-    rating = get_element_text(content, "div", "starLabel")
-    print(rating)
+def update_company_fields(companies_filter, *fields):
+    print("here", companies_filter)
+    companies_response = pull_companies(companies_filter)
+    for company in companies_response:
+        gpt_response = gpt_get_company_metrics(company['name'], company['website'], *fields)
+
 
 def update_company_investors():
     investors_map = {}

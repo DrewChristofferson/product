@@ -4,6 +4,48 @@ from datetime import datetime
 import json
 import time
 
+GPT_ROLE = """
+    You are a market researcher that needs to find information about a company. Respond in a valid JSON structure (e.g., no unnecessary whitespace or non-ASCII characters). Don't include don't include '\n' in the JSON. If you can't find an answer, put a string with the reason you can't provide an answer for that field. Sites like Pitchbook, TechCrunch, Crunchbase, or other PR articles typcially are good places to look for company funding and valuation data. Here are the field(s) that you are looking for:
+    """
+
+FIELD_DEFINITIONS = {
+    'name': "Name of the company", 
+    'formerly_known_as': "List of names that the company was formerly known as", 
+    'website': "Home page URL for the company", 
+    'careers_page': "The URL of the company's current job openings", 
+    'hq_city': "The city of the company headquarters", 
+    'hq_state': "If the company headquarters is in the United States, return the state of the company headquarters in its two-letter abbreviation (e.g., CA, NY, TX)", 
+    'hq_country': "The country of the company headquarters (return 'United States' if the country is the US)", 
+    'description': "A paragraph summarizing what the company is", 
+    'long_description': "A longer multi-paragraph description that goes more in depth on the products and services the company offers", 
+    'company_mission': "The company mission (return None if you can't find it)",
+    'business_model': "Description of how the company makes money",
+    'market_memo': "A brief memo by a market researcher about how the company is set up for success and why the company will win in its industry",
+    'competitors': "A list of up to 5 competitors for this company",
+    'office_locations': "List of cities where this company has offices (just return city name, don't include state!)", 
+    'year_founded': "The year of the company's founding", 
+    'founders': "The list of founders for the company", 
+    'founder_resume': "A list of background/resumes for each founder highlighting their education and experience before starting the company (One list item per founder, each item should be one paragraph, and don't use colon notation)",
+    'ceo_name': "The name of the current CEO of the company",
+    'is_ceo_founder': "Whether the CEO is one of the company founders (return 'YES' or 'NO')", 
+    'ceo_resume': "A background/resume of the CEO highlighting their education and experience before becoming the CEO of the company (don't use colon notation and if the ceo is also a founder, you can use the same paragraph as the one for the founder background)",
+    'num_employees': "Integer for the number of employees that work for the company", 
+    'ipo_status': "Whether the company has gone through an IPO (select from Public, Private, or Delisted)", 
+    'ipo_year': "What year the company went public - public companies only", 
+    'ticker_symbol': "The ticker symbol - public companies only", 
+    'estimated_revenue': "Integer for the estimated annual 2023 or 2022 revenue (In $M with no decimal points)", 
+    'acquisitions': "List of company names of up to 5 of biggest companies that this company has acquired", 
+    'acquired_by': "Name of the company that acquired this company if applicable", 
+    'acquired_year': "Year the company was acquired if applicable", 
+    'benefits': "List of the top benefits or noteworthy perks that the company offers (maximum 10 benefits/perks)", 
+    'equity_series': "[For pre-IPO companies only] The most recent equity series raised in startup fundraising (select from Seed, or Series A-Z)", 
+    'total_funding': "Integer for the total funding a company has received - pre_IPO companies only (In $M with no decimal points)", 
+    'company_valuation': "[For pre-IPO companies only] Float for the company valuation after the most recent fundraising round (In $B with one decimal point)"
+}
+
+
+
+
 def test_openai(job_posting):
     client = set_open_config()
 
@@ -58,6 +100,23 @@ def get_investors(company_name, investors):
 
     return(json_response)
 
+def gpt_get_company_metrics(company_name, company_website, *fields):
+    fields_str = ""
+    for field in fields:
+        fields_str += f"{field}: {FIELD_DEFINITIONS[field]},"
+    
+    client = set_open_config()
+    completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": f"{GPT_ROLE} {fields_str}"},
+        {"role": "user", "content": f"Please find me the details for {company_name}. If you find multiple companies with the same name, use the company with this website: {company_website}. Don't include ```json in your response."}
+    ])
+    res_msg = completion.choices[0].message.content
+    print(res_msg)
+    print(company_name)
+
+
 def gpt_get_company_info(company_name, company_website, max_retries=2):
     retries = 0
     while retries <= max_retries:
@@ -71,8 +130,6 @@ def gpt_get_company_info(company_name, company_website, max_retries=2):
                 print("reached max retries")
                 return(None)
             response_content = make_company_info_request(company_name, company_website)
-
-
 
 
 def make_company_info_request(company_name, company_website):
