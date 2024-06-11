@@ -33,10 +33,16 @@ def update_existing_company_data():
             updated_company = update_company(company['airtable_id'], gpt_response)
 
 def update_company_fields(companies_filter, *fields):
-    print("here", companies_filter)
     companies_response = pull_companies(companies_filter)
     for company in companies_response:
+        fields_to_update = {}
         gpt_response = gpt_get_company_metrics(company['name'], company['website'], *fields)
+        # for field in fields:
+        #     if gpt_response[field] and company[field] != gpt_response[field]:
+        #         fields_to_update[field] = gpt_response[field]
+        #     else:
+        #         print("not updating")
+        updated_company = update_company(company['airtable_id'], gpt_response)
 
 
 def update_company_investors():

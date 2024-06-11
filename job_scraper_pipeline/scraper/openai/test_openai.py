@@ -5,7 +5,7 @@ import json
 import time
 
 GPT_ROLE = """
-    You are a market researcher that needs to find information about a company. Respond in a valid JSON structure (e.g., no unnecessary whitespace or non-ASCII characters). Don't include don't include '\n' in the JSON. If you can't find an answer, put a string with the reason you can't provide an answer for that field. Sites like Pitchbook, TechCrunch, Crunchbase, or other PR articles typcially are good places to look for company funding and valuation data. Here are the field(s) that you are looking for:
+    You are a market researcher that needs to find information about a company. Respond in a valid JSON structure (e.g., no unnecessary whitespace or non-ASCII characters). Don't include don't include '\n' in the JSON. If you can't find an answer, put a value of null, do not guess. Sites like Pitchbook, TechCrunch, Crunchbase, or other PR articles typcially are good places to look for company funding and valuation data. Here are the field(s) that you are looking for (don't include any other fields in the JSON):
     """
 
 FIELD_DEFINITIONS = {
@@ -22,7 +22,7 @@ FIELD_DEFINITIONS = {
     'business_model': "Description of how the company makes money",
     'market_memo': "A brief memo by a market researcher about how the company is set up for success and why the company will win in its industry",
     'competitors': "A list of up to 5 competitors for this company",
-    'office_locations': "List of cities where this company has offices (just return city name, don't include state!)", 
+    'office_locations': "List of the US cities where this company has all of it's locations (format response as city name, state abbrev.)", 
     'year_founded': "The year of the company's founding", 
     'founders': "The list of founders for the company", 
     'founder_resume': "A list of background/resumes for each founder highlighting their education and experience before starting the company (One list item per founder, each item should be one paragraph, and don't use colon notation)",
@@ -115,6 +115,8 @@ def gpt_get_company_metrics(company_name, company_website, *fields):
     res_msg = completion.choices[0].message.content
     print(res_msg)
     print(company_name)
+    json_response = json.loads(res_msg)
+    return json_response
 
 
 def gpt_get_company_info(company_name, company_website, max_retries=2):

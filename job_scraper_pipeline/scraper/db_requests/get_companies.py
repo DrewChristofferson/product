@@ -15,7 +15,11 @@ FIELDS_TO_RETURN = [
             "next_btn_xpath",
             "investors",
             "hq_country",
-            "ticker_symbol"
+            "ticker_symbol",
+            "estimated_revenue",
+            "total_funding",
+            "company_valuation",
+            "office_locations"
         ]
 
 def pull_companies(companies_filter):
@@ -62,7 +66,14 @@ def pull_companies(companies_filter):
                 "next_btn_xpath": company['fields']['next_btn_xpath'] if 'next_btn_xpath' in company['fields'] else None,
                 "investors": company['fields']['investors'] if 'investors' in company['fields'] else None,
                 "hq_country": company['fields']['hq_country'] if 'hq_country' in company['fields'] else None,
-                "ticker_symbol": company['fields']['ticker_symbol'] if 'ticker_symbol' in company['fields'] else None
+                "ticker_symbol": company['fields']['ticker_symbol'] if 'ticker_symbol' in company['fields'] else None,
+                "estimated_revenue": company['fields']['estimated_revenue'] if 'estimated_revenue' in company['fields'] else None,
+                "total_funding": company['fields']['total_funding'] if 'total_funding' in company['fields'] else None,
+                "company_valuation": company['fields']['company_valuation'] if 'company_valuation' in company['fields'] else None,
+                "office_locations": company['fields']['office_locations'] if 'office_locations' in company['fields'] else None
+
+
+
             })
 
         else:
