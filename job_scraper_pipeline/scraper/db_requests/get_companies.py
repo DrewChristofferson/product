@@ -19,7 +19,8 @@ FIELDS_TO_RETURN = [
             "estimated_revenue",
             "total_funding",
             "company_valuation",
-            "office_locations"
+            "office_locations",
+            "num_employees"
         ]
 
 def pull_companies(companies_filter=None):
@@ -72,7 +73,9 @@ def pull_companies(companies_filter=None):
                 "estimated_revenue": company['fields']['estimated_revenue'] if 'estimated_revenue' in company['fields'] else None,
                 "total_funding": company['fields']['total_funding'] if 'total_funding' in company['fields'] else None,
                 "company_valuation": company['fields']['company_valuation'] if 'company_valuation' in company['fields'] else None,
-                "office_locations": company['fields']['office_locations'] if 'office_locations' in company['fields'] else None
+                "office_locations": company['fields']['office_locations'] if 'office_locations' in company['fields'] else None,
+                "num_employees": company['fields']['num_employees'] if 'num_employees' in company['fields'] else None
+
 
 
 

@@ -7,6 +7,7 @@ on:
 
 env:
   airtable_api_key: ${{ secrets.AIRTABLE_API_KEY }}
+  openai_api_key: ${{ secrets.OPENAI_API_KEY }}
 
 jobs:
   scrape:
