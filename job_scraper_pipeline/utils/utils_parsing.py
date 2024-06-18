@@ -74,7 +74,6 @@ def get_url_content(url, headers=None, max_retries=4):
                 soup = BeautifulSoup(job_detail_page.content, "html.parser")
                 return(soup)
             else:
-                print(job_detail_page.status_code)
                 if max_retries == retries:
                     print("reached max retries")
                     return(None)

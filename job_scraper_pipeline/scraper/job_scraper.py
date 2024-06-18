@@ -37,7 +37,7 @@ def scrape_jobs(company_name=None):
         today = datetime.now().strftime("%Y-%m-%d")
 
         if today != date_last_scraped:
-            # print(f'Now scraping for product jobs at {company_name}\n')
+            print(f'Now scraping for product jobs at {company_name}\n')
             #break out function to get existing jobs
             # create_data_dir(company_name)
             existing_jobs = pull_existing_jobs_for_company(company_name)
@@ -46,7 +46,6 @@ def scrape_jobs(company_name=None):
                 company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
 
             elif a_company['careers_page_url']:
-                print("scrapping nonlinkedin for ", company_name)
                 new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = get_company_page_jobs(a_company, browser, run_log_file_path, existing_jobs) 
                 company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details_company(a_company, company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate, browser)
 
@@ -62,8 +61,9 @@ def scrape_jobs(company_name=None):
             log(run_log_file_path, f"{company_name}: {company_airtable_jobs_count} added | {company_airtable_deactivated_jobs_count} deactivated | {company_airtable_reactivated_jobs_count} reactivated \n")
             log_company_scrape(company_airtable_id)
         
-        #send jds to s3 to extract details and update airtable records. TODO: refactor to get details earlier in the pipeline. Currectly depedent on airtable creating an ID. 
-        job_descriptions_to_s3(companies, browser)
+    print("now updating job details")
+    #send jds to s3 to extract details and update airtable records. TODO: refactor to get details earlier in the pipeline. Currectly depedent on airtable creating an ID. 
+    job_descriptions_to_s3(companies, browser)
 
     log(run_log_file_path,f"Count jobs added to airtable: {all_airtable_jobs_count} | Count jobs decativated on airtable: {all_airtable_deactivated_jobs_count} | Count jobs recativated on airtable: {all_airtable_reactivated_jobs_count}\n")
     browser.quit()
