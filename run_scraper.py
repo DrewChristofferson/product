@@ -54,7 +54,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="A Python command-line script to run scripts in the careers pipeline.")
     parser.add_argument("script", type=str, help="Script file to run.")
     parser.add_argument("-C", "--filter_companies", nargs='*', default=companies_to_run, type=str, help="Companies to evaluate or take action on.")
-    parser.add_argument("-N", "--company_name", nargs='?', default='GitLab', type=str, help="Company to pull jobs for.")
+    parser.add_argument("-N", "--company_name", nargs='?', type=str, help="Company to pull jobs for.")
     parser.add_argument("-F", "--fields", nargs='*', help="Your company fields to update.")
     arguments = parser.parse_args()
     print(arguments.script)
