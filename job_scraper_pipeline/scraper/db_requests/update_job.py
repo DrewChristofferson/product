@@ -51,3 +51,12 @@ def add_loc_to_existing_job(new_location, existing_job):
         },
         typecast=True
     )
+
+def update_job(airtable_id, fields):
+    airtable_table = set_airtable_config('jobs')
+    response = airtable_table.update(
+        airtable_id, 
+        fields, 
+        typecast=True
+    )
+    return(response)

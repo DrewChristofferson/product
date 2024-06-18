@@ -1,7 +1,8 @@
 import boto3
-from botocore.exceptions import NoCredentialsError, PartialCredentialsError
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
 import os
 from ...utils.utils_parsing import get_url_content, get_element_text
+from ..db_requests.update_job import update_job
 import html2text
 
 
@@ -23,49 +24,70 @@ def upload_file_to_s3(file_name, bucket_name, object_name=None):
     except PartialCredentialsError:
         print("Incomplete credentials provided")
 
-def upload_html_to_s3(bucket_name, file_name, html_content):
+def upload_txt_to_s3(company_name, job_id, content):
     s3_client = boto3.client('s3')
-    if html_content is None:
-        print("HTML content is None. Unable to upload.")
+    bucket_name = 'careersintech-job-postings'
+    object_name = f'{company_name}/{job_id}/raw-job-description.txt'
+    if content is None:
+        print("Content is None. Unable to upload.")
         return
     else:
-        print(html_content)
         # Upload the HTML content to S3
-        s3_client.put_object(Bucket=bucket_name, Key=file_name, Body=html_content, ContentType='text/html')
+        response = s3_client.put_object(Bucket=bucket_name, Key=object_name, Body=content)
 
 
-def download_file_from_s3(bucket_name, object_name, file_name=None):
-    if file_name is None:
-        file_name = object_name
+
+def download_file_from_s3(company_name, job_id):
+    bucket_name = 'careersintech-job-postings'
+    file_key = f'{company_name}/{job_id}/raw-job-description.txt'
 
     s3_client = boto3.client('s3')
 
     try:
-        s3_client.download_file(bucket_name, object_name, file_name)
-        print(f"File {object_name} from {bucket_name} downloaded as {file_name}")
+        response = s3_client.get_object(Bucket=bucket_name, Key=file_key)
+        file_content = response['Body'].read().decode('utf-8')
+        return file_content
     except FileNotFoundError:
-        print(f"The file {file_name} was not found")
+        print(f"The file {file_key} was not found")
     except NoCredentialsError:
         print("Credentials not available")
     except PartialCredentialsError:
         print("Incomplete credentials provided")
 
-def s3_test():
-    # Usage
-    file_name = 'job_scraper_pipeline/scraper/s3/test.txt'
-    object_name = 'coinbase/random-id/raw-job-description.html'
-    bucket_name = 'careersintech-job-postings'
-    # current_path = os.getcwd()
+# Function to upload PNG files to AWS S3
+def upload_png_files_to_s3(directory_path, bucket_name):
+    # Initialize S3 client
+    s3 = boto3.client('s3')
 
-    # Print the current working directory
-    # print(f"The current working directory is: {current_path}")
-    print(file_name, bucket_name, object_name)
-    html_content_raw = get_url_content('https://www.coinbase.com/careers/positions/5479981?gh_jid=5479981&gh_src=20687b321us')
-    html_content = str(html_content_raw)
-    # text_content = get_element_text(html_content, 'div', 'Listing__DescriptionColumn-sc-aa86649f-7')
-    # print(text_content)
-    # upload_file_to_s3(file_name, bucket_name, object_name)
-    # download_file_from_s3(bucket_name, object_name, file_name)
+    # List to store uploaded file URLs
+    uploaded_urls = []
 
-    upload_html_to_s3(bucket_name, object_name, html_content)
+    try:
+        # Loop through files in the directory
+        for filename in os.listdir(directory_path):
+            if filename.endswith('.png'):
+                file_path = os.path.join(directory_path, filename)
+                s3_key = 'images' + '/' + filename
+
+                # Upload file to S3 bucket
+                s3.upload_file(file_path, bucket_name, s3_key)
+
+                # Generate public URL for the uploaded file
+                url = f"https://{bucket_name}.s3.amazonaws.com/{s3_key}"
+                uploaded_urls.append(url)
+
+                print(f"Uploaded {filename} to S3 bucket {bucket_name}")
+
+        return uploaded_urls
+
+    except NoCredentialsError:
+        print("AWS credentials not available.")
+        return None
+    except ClientError as e:
+        print(f"Error uploading file to S3: {e}")
+        return None
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
+
 

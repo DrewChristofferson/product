@@ -32,7 +32,7 @@ def get_linkedin_jobs(company, browser, run_log_file_path, existing_company_jobs
                 if job[0] not in existing_company_jobs and "Product Manager" in job[1] and job[5]:
                     postings_to_add[job_formatted["job_id"]] = job_formatted["values"]
 
-        new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = identify_inactive_jobs(existing_company_jobs, postings_to_add)
+    new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = identify_inactive_jobs(existing_company_jobs, postings_to_add)
     # else:
     #     print("No jobs at this company")
     return(new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count)

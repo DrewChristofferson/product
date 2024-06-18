@@ -20,7 +20,10 @@ FIELDS_TO_RETURN = [
             "total_funding",
             "company_valuation",
             "office_locations",
-            "num_employees"
+            "num_employees",
+            "logo",
+            "Industry Name",
+            "Count of Jobs"
         ]
 
 def pull_companies(companies_filter=None):
@@ -30,8 +33,10 @@ def pull_companies(companies_filter=None):
     all_companies_raw = []
     airtable = set_airtable_config('companies')
     if companies_filter is None:
+        print('here')
         response = airtable.all(
-            sort=["name"], 
+            # sort=["-Count of Jobs"], 
+            sort=["name"],
             fields=FIELDS_TO_RETURN
             )
         all_companies_raw = response
@@ -74,12 +79,10 @@ def pull_companies(companies_filter=None):
                 "total_funding": company['fields']['total_funding'] if 'total_funding' in company['fields'] else None,
                 "company_valuation": company['fields']['company_valuation'] if 'company_valuation' in company['fields'] else None,
                 "office_locations": company['fields']['office_locations'] if 'office_locations' in company['fields'] else None,
-                "num_employees": company['fields']['num_employees'] if 'num_employees' in company['fields'] else None
-
-
-
-
-            })
+                "num_employees": company['fields']['num_employees'] if 'num_employees' in company['fields'] else None,
+                "logo": company['fields']['logo'] if 'logo' in company['fields'] else None,
+                "Industry Name": company['fields']['Industry Name'] if 'Industry Name' in company['fields'] else None,
+                "Count of Jobs": company['fields']['Count of Jobs'] if 'Count of Jobs' in company['fields'] else None            })
 
         else:
             pass
@@ -94,5 +97,6 @@ def get_one_company(company_name):
     formula = match({"name": company_name})
     response = airtable.first(formula=formula)
     return(response)
+
 
 

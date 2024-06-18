@@ -17,13 +17,13 @@ def set_up_selenium_browser():
     # Set up Chrome options
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--referer=" + CUSTOM_REFERER)
-    chrome_options.add_argument("--headless=new")
+    # chrome_options.add_argument("--headless=new")
     # Instantiate the Chrome driver with the custom options
     browser = webdriver.Chrome(options=chrome_options)
     return browser
 
 
-def open_selenium_driver(driver, url, company_name, run_log_file_path, max_retries=4, delay=1):
+def open_selenium_driver(driver, url, company_name=None, run_log_file_path=None, max_retries=4, delay=1):
     retries = 0
     max_retries_reached = False
     while retries <= max_retries:
@@ -71,7 +71,7 @@ def scroll_to_all_job_listings(browser):
         # print("Element not found, scrolling down...")
 
 
-def check_if_element_exists(type, html, criteria):
+def check_if_element_exists(type, html, criteria=None):
     try:
         if type == 'xpath':
             print("xpath searching")

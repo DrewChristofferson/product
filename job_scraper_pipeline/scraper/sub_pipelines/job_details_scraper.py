@@ -1,6 +1,7 @@
 from fake_useragent import UserAgent
 from ..db_requests.update_job import deactivate_airtable_record
 from ...utils.utils_parsing import assign_field_values, get_url_content, check_active_job, clean_salary, get_date, get_levels, get_experience_number
+from .job_details_to_s3 import job_descriptions_to_s3
 
 PARENT_DIRECTORY_PATH = "data/new_production"
 airtable_api_key = ''
@@ -21,6 +22,8 @@ def fetch_job_details_with_retry(url, job_title, headers, company_name, run_log_
     if job_details_page_content:
         content = job_details_page_content.find("div", class_="description__text")
         if content:
+            # TODO: refactor to send to s3 before creation
+            # job_descriptions_to_s3(company_name, content)
             return(assign_field_values(job_details_page_content, headers, company_name))
         else:
             details_errors.append([job_title, url])

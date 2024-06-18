@@ -43,44 +43,64 @@ FIELD_DEFINITIONS = {
     'company_valuation': "[For pre-IPO companies only] Float for the company valuation after the most recent fundraising round (In $B with one decimal point)"
 }
 
+GPT_ROLE_JOBS = """
+    You are a product manager looking for you next role. You are browsing a job post for an open position at a tech company with the goal to extract the relevant information and synthesize into fields in a JSON object. Respond in a valid JSON structure (e.g., no unnecessary whitespace or non-ASCII characters). Don't include don't include '\n' in the JSON response. Don't put ```json in your response. Here are the field(s) that you are looking for (don't include any other fields in the JSON):
+    """
+
+JOB_FIELD_DEFINITIONS = {
+    'is_remote': "Whether the job is or can be a remote position (return 'YES' or 'NO', if remote work is not mentioned put 'NO')",
+    'is_people_manager': "Whether the role includes responsibilities managing other people or not (return 'YES' or 'NO', if management responsibilities are not mentioned put 'NO')",
+    'product_name': "The name of the product or a very short description of the product that this role is for",
+    'product_summary': "A paragraph summarizing first what the product is and then how the person in this role will impact the product.", 
+    'job_responsibilities': "A list of all the things expected to do in this role",
+    'key_stakeholders': "A list of all the stakeholder teams mentioned that the person in this role will work with (Choose from 'Engineering', 'Design', 'Marketing', 'Sales', 'Data Science', 'Customer Support', 'Finance', 'Business', 'Legal', 'Operations'",
+    'minimum_qualifications': "A list of all the qualifications that a candidate should have",
+    'preferred_qualifications': "A list of all the qualifications that are preferred or nice-to-haves (there should be no overlap with the minimum_qualifications)",
+    'product_type': "Whether it's an internal or customer-facing product (return 'Internal' or 'Customer-facing')",
+    'min_base_salary': "Integer of the minimum of the range mentioned (return null if not listed)", 
+    'max_base_salary': "Integer of the maximum of the range mentioned (return null if not listed)", 
+    'is_equity_offered': "Whether or not equity compensation or stock options are offered for this role (return 'YES' or 'NO', and anything other than a definitive yes should be no)",
+    'years_experience_req': "Integer of the number of years of relevant work expereince required (return null if there's no years experience mentioned)",
+    'minimum_education_degree_level': "The education degree level required (Choose from null, 'Bachelor', 'Master', 'PhD')",
+    'preferred_education_degree_level': "The education degree level preferred (Choose from null, 'Bachelor', 'Master', 'PhD')",
+    'preferred_undergrad_field_of_study': "List of preferred undergrad degrees for this role",
+    'product_management_skills': "List of up to product management specific skills mentioned in this job description",
+    'benefits': 'List of benefits that this company offers for this role'
+}
+
+def sythesize_job_posting_wrapper(job_posting, company_name, job_title, *fields, max_retries=2):
+    retries = 0
+    while retries <= max_retries:
+        retries += 1
+        response_content = synthesize_job_posting(job_posting, company_name, job_title, *fields)
+        if is_valid_json(response_content):
+            json_response = json.loads(response_content)
+            return json_response
+        else:
+            if max_retries == retries:
+                print("reached max retries")
+                return(None)
+            response_content = synthesize_job_posting(job_posting, company_name, job_title, *fields)
 
 
-
-def test_openai(job_posting):
+def synthesize_job_posting(job_posting, company_name, job_title, *fields):
+    fields_str = ""
+    if fields:
+        for field in fields:
+            fields_str += f"{field}: {JOB_FIELD_DEFINITIONS[field]},"
+    else:
+        fields_str = JOB_FIELD_DEFINITIONS
+    
     client = set_open_config()
-
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "system", "content": 
-        f"Your job is to take a job posting and synthesize it into a JSON format (please don't include '\n' in the json) with the following fields - job_title: String name of job role, posted_date: Date for when the job was posted (for reference, today's date is {datetime.now()}) in python datetime type, locations: A list of all locations for the job, specifying the city and state (an example format is 'San Francisco, CA', don't include country!), job_summary: A paragraph summarizing what product is and what the role is, min_salary: The minimum of the range mentioned, max_salary: The maximum of the range mentioned, years_experience_req: Integer of the number of years required in product management. Also, please make sure your response is valid JSON (e.g., no unnecessary whitespace or non-ASCII characters). If you can't find information for a field, assign a value of null instead. If the date is 30+ days ago, then just use one month from today as the posted_date"
-        },
-        {"role": "user", "content": job_posting}
-    ]
-    )
-    content_read = completion.choices[0].message.content
-    # print(content_read)
-    json_response = json.loads(completion.choices[0].message.content)
+        {"role": "system", "content": f"{GPT_ROLE_JOBS} {fields_str}"},
+        {"role": "user", "content": f"Analyze the job description for {job_title} and {company_name}. This is the raw text of the job description: {job_posting} "}
+    ])
+    res_msg = completion.choices[0].message.content
+    return res_msg
 
-    return(json_response)
-
-def test_openai_jobs(job_listing):
-    client = set_open_config()
-
-    completion = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": 
-        f"Your job is to take a list of raw data of some job postings and synthesize it into a JSON list with elements that have the following fields (please don't include \n in the json) - job_title: String name of job role, location: The location for the job, specifying the city and state (an example format is 'San Francisco, CA', don't include country!), job_url: the link to the job posting page. Also, please make sure your response is valid JSON (e.g., no unnecessary whitespace or non-ASCII characters). If you can't find information for a field, don't add the job to the list."
-        },
-        {"role": "user", "content": job_listing}
-    ]
-    )
-    content = completion.choices[0].message.content
-    # print(content)
-    json_response = json.loads(completion.choices[0].message.content)
-
-    return(json_response)
 
 def get_investors(company_name, investors):
     client = set_open_config()
@@ -218,3 +238,46 @@ def make_company_info_request(company_name, company_website):
     home_office_stipend: whether home office stipend is offered (select 'YES' or 'NO'), 
     
     """
+
+
+
+
+
+    # Old functions
+
+def test_openai(job_posting):
+    client = set_open_config()
+
+    completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": 
+        f"Your job is to take a job posting and synthesize it into a JSON format (please don't include '\n' in the json) with the following fields - job_title: String name of job role, posted_date: Date for when the job was posted (for reference, today's date is {datetime.now()}) in python datetime type, locations: A list of all locations for the job, specifying the city and state (an example format is 'San Francisco, CA', don't include country!), job_summary: A paragraph summarizing what product is and what the role is, min_salary: The minimum of the range mentioned, max_salary: The maximum of the range mentioned, years_experience_req: Integer of the number of years required in product management. Also, please make sure your response is valid JSON (e.g., no unnecessary whitespace or non-ASCII characters). If you can't find information for a field, assign a value of null instead. If the date is 30+ days ago, then just use one month from today as the posted_date"
+        },
+        {"role": "user", "content": job_posting}
+    ]
+    )
+    content_read = completion.choices[0].message.content
+    print(content_read)
+    json_response = json.loads(completion.choices[0].message.content)
+
+    return(json_response)
+
+
+# def test_openai_jobs(job_listing):
+#     client = set_open_config()
+
+#     completion = client.chat.completions.create(
+#     model="gpt-3.5-turbo",
+#     messages=[
+#         {"role": "system", "content": 
+#         f"Your job is to take a list of raw data of some job postings and synthesize it into a JSON list with elements that have the following fields (please don't include \n in the json) - job_title: String name of job role, location: The location for the job, specifying the city and state (an example format is 'San Francisco, CA', don't include country!), job_url: the link to the job posting page. Also, please make sure your response is valid JSON (e.g., no unnecessary whitespace or non-ASCII characters). If you can't find information for a field, don't add the job to the list."
+#         },
+#         {"role": "user", "content": job_listing}
+#     ]
+#     )
+#     content = completion.choices[0].message.content
+#     # print(content)
+#     json_response = json.loads(completion.choices[0].message.content)
+
+#     return(json_response)

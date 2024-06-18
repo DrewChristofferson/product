@@ -48,6 +48,15 @@ def assign_field_values(content, headers, company_name):
         max_salary = None
     return(min_salary, max_salary, cleaned_experience_requirements, True)
 
+
+def temp_fetch_job_details(url, xpath, browser):
+    open_selenium_driver(browser, url)
+    content_raw = WebDriverWait(browser, 10).until(
+        EC.presence_of_element_located((By.XPATH, xpath))
+    )
+    content_text = content_raw.text
+    return(content_text)
+
 def fetch_job_details_with_retry(url, job_title, headers, company_name, container_html_class, run_log_file_path, browser, max_retries=2):
     job = {
 

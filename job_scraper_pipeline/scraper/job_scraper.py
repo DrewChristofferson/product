@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import time
 from ..utils.utils_general import calc_start_time, log
 from ..utils.utils_selenium import set_up_selenium_browser
 from .sub_pipelines.job_details_scraper import scrape_job_details
@@ -10,16 +11,17 @@ from .db_requests.get_companies import pull_companies
 from .sub_pipelines.dedup_jobs import dedup_jobs
 from .db_requests.update_company import log_company_scrape
 from .db_requests.create_jobs import create_new_jobs_batch as add_new_jobs
+from .sub_pipelines.job_details_to_s3 import job_descriptions_to_s3
 
 
-def scrape_jobs():
+def scrape_jobs(company_name=None):
     all_airtable_jobs_count = 0
     all_airtable_deactivated_jobs_count = 0
     all_airtable_reactivated_jobs_count = 0
     run_log_file_path = None #Placeholder for if we want to send logs to a file
 
     run_start_datetime = calc_start_time(run_log_file_path)
-    companies = pull_companies()
+    companies = pull_companies(company_name)
     browser = set_up_selenium_browser()
 
     for a_company in companies:
@@ -59,8 +61,9 @@ def scrape_jobs():
 
             log(run_log_file_path, f"{company_name}: {company_airtable_jobs_count} added | {company_airtable_deactivated_jobs_count} deactivated | {company_airtable_reactivated_jobs_count} reactivated \n")
             log_company_scrape(company_airtable_id)
-        # else: 
-        #     print(f"already scraped {company_name} recently")
+        
+        #send jds to s3 to extract details and update airtable records. TODO: refactor to get details earlier in the pipeline. Currectly depedent on airtable creating an ID. 
+        job_descriptions_to_s3(companies, browser)
 
     log(run_log_file_path,f"Count jobs added to airtable: {all_airtable_jobs_count} | Count jobs decativated on airtable: {all_airtable_deactivated_jobs_count} | Count jobs recativated on airtable: {all_airtable_reactivated_jobs_count}\n")
     browser.quit()
