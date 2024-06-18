@@ -1,4 +1,8 @@
 data/*
 docs/*
+logos/*
+logos_manual/*
+logos_manual_cleaned/*
+logos_small/*
 .env
 my_project/utils/credentials.json
