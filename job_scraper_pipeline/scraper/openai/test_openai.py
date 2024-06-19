@@ -52,7 +52,6 @@ JOB_FIELD_DEFINITIONS = {
     'is_people_manager': "Whether the role includes responsibilities managing other people or not (return 'YES' or 'NO', if management responsibilities are not mentioned put 'NO')",
     'product_name': "The name of the product or a very short description of the product that this role is for",
     'product_summary': "A paragraph summarizing first what the product is and then how the person in this role will impact the product.", 
-    'job_responsibilities': "A list of all the things expected to do in this role",
     'key_stakeholders': "A list of all the stakeholder teams mentioned that the person in this role will work with (Choose from 'Engineering', 'Design', 'Marketing', 'Sales', 'Data Science', 'Customer Support', 'Finance', 'Business', 'Legal', 'Operations'",
     'minimum_qualifications': "A list of all the qualifications that a candidate should have",
     'preferred_qualifications': "A list of all the qualifications that are preferred or nice-to-haves (there should be no overlap with the minimum_qualifications)",
@@ -67,6 +66,8 @@ JOB_FIELD_DEFINITIONS = {
     'product_management_skills': "List of up to product management specific skills mentioned in this job description",
     'benefits': 'List of benefits that this company offers for this role'
 }
+    # TODO'job_responsibilities': "A list of all the things expected to do in this role",
+
 
 def sythesize_job_posting_wrapper(job_posting, company_name, job_title, *fields, max_retries=2):
     retries = 0
