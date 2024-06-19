@@ -11,6 +11,7 @@ def deactivate_old_jobs(company_jobs, deactivated_count):
             print('expired')
             deactivated_count = deactivate_airtable_record(_id, deactivated_count)
         else: # url is None or url is not expired:
-            print("not expired")
+            pass
+            # print("not expired")
     return(deactivated_count)
 

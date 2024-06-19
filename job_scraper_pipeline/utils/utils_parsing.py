@@ -66,7 +66,6 @@ def get_content_final_url(url, headers=None, max_retries=4):
         try:
             retries += 1
             job_detail_page = requests.get(url, headers=headers)
-            print(job_detail_page.status_code, job_detail_page.url)
             if job_detail_page.status_code == 200:
                 return(job_detail_page.url)
             else:
@@ -97,7 +96,6 @@ def get_url_content(url, headers=None, max_retries=4):
             job_detail_page = requests.get(url, headers=headers)
             # time.sleep(random.uniform(1,3))
             # Check if the request was successful (status code 200)
-            print(job_detail_page.url)
             if job_detail_page.status_code == 200:
                 # Process the response data
                 soup = BeautifulSoup(job_detail_page.content, "html.parser")
