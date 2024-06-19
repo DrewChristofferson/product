@@ -60,13 +60,13 @@ JOB_FIELD_DEFINITIONS = {
     'max_base_salary': "Integer of the maximum of the range mentioned (return null if not listed)", 
     'is_equity_offered': "Whether or not equity compensation or stock options are offered for this role (return 'YES' or 'NO', and anything other than a definitive yes should be no)",
     'years_experience_req': "Integer of the number of years of relevant work expereince required (return null if there's no years experience mentioned)",
+    'job_responsibilities': "A list of all the things expected to do in this role",
     'minimum_education_degree_level': "The education degree level required (Choose from null, 'Bachelor', 'Master', 'PhD')",
     'preferred_education_degree_level': "The education degree level preferred (Choose from null, 'Bachelor', 'Master', 'PhD')",
     'preferred_undergrad_field_of_study': "List of preferred undergrad degrees for this role",
     'product_management_skills': "List of up to product management specific skills mentioned in this job description",
     'benefits': 'List of benefits that this company offers for this role'
 }
-    # TODO'job_responsibilities': "A list of all the things expected to do in this role",
 
 
 def sythesize_job_posting_wrapper(job_posting, company_name, job_title, *fields, max_retries=2):
@@ -81,7 +81,6 @@ def sythesize_job_posting_wrapper(job_posting, company_name, job_title, *fields,
             if max_retries == retries:
                 print("reached max retries")
                 return(None)
-            response_content = synthesize_job_posting(job_posting, company_name, job_title, *fields)
 
 
 def synthesize_job_posting(job_posting, company_name, job_title, *fields):
@@ -152,7 +151,6 @@ def gpt_get_company_info(company_name, company_website, max_retries=2):
             if max_retries == retries:
                 print("reached max retries")
                 return(None)
-            response_content = make_company_info_request(company_name, company_website)
 
 
 def make_company_info_request(company_name, company_website):
