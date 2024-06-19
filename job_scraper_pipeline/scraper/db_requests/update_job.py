@@ -12,6 +12,7 @@ def deactivate_airtable_record(airtable_record_id, jobs_deactivated_count):
         typecast=True
     )
     # is_airtable_record_is_active = True if "is_active" not in response["fields"] else False
+    print(f"deactivated job {airtable_record_id}")
     jobs_deactivated_count += 1
     return(jobs_deactivated_count)
 

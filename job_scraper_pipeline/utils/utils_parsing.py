@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import requests
 from urllib.parse import unquote
 import re
+import time
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent
@@ -72,6 +73,7 @@ def get_content_final_url(url, headers=None, max_retries=4):
                 if max_retries == retries:
                     print("reached max retries")
                     return(None)
+                time.sleep(1)
             
                 
         except requests.RequestException as e:

@@ -109,7 +109,6 @@ def scrape_job_details_company(company, company_name, run_log_file_path, jobs_de
       'Accept-Language': 'en-US,en;q=0.8',
       'Connection': 'keep-alive'}
     details_errors = []
-    print("new jobs ---------------------", new_jobs, "end ------------------")
     for job_to_inactivate in jobs_to_inactivate:
         jobs_deactivated_count = deactivate_airtable_record(job_to_inactivate['id'], jobs_deactivated_count)
     for new_job in new_jobs:

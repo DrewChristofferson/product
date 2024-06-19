@@ -8,7 +8,6 @@ def deactivate_old_jobs(company_jobs, deactivated_count):
         url = job['job_post_linkedin_url']
         url_after_final_redirect = get_content_final_url(url)
         if url_after_final_redirect and 'expired_jd_redirect' in url_after_final_redirect:
-            print('expired')
             deactivated_count = deactivate_airtable_record(_id, deactivated_count)
         else: # url is None or url is not expired:
             pass

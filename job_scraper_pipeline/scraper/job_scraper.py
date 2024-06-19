@@ -38,13 +38,11 @@ def scrape_jobs(company_name=None):
         today = datetime.now().strftime("%Y-%m-%d")
 
         if today != date_last_scraped:
-            print(f'Now scraping for product jobs at {company_name}\n')
             #break out function to get existing jobs
             # create_data_dir(company_name)
             existing_jobs = pull_existing_jobs_for_company(company_name)
             if not a_company['careers_page_url']:
                 company_airtable_deactivated_jobs_count = deactivate_old_jobs(existing_jobs, company_airtable_deactivated_jobs_count)
-                print(company_airtable_deactivated_jobs_count)
                 new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = get_linkedin_jobs(a_company, browser, run_log_file_path, existing_jobs) 
                 company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
 

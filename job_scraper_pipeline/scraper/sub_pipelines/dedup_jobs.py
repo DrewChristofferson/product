@@ -7,8 +7,6 @@ def dedup_jobs(company_name, new_jobs, existing_jobs):
     while i < len(new_jobs):
         new_job = new_jobs[i]
         for existing_job in existing_jobs:
-            if new_job['job_title'] == existing_job['job_title']:
-                print(new_job['job_title'], new_job['years_experience_req'], existing_job['years_experience_req'])
             if existing_job["is_active"] == False:
                 pass
             else:

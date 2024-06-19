@@ -5,7 +5,6 @@ def identify_inactive_jobs(existing_jobs, postings_to_add, is_company_page=False
     jobs_to_inactivate = []
     reactivated_jobs_count = 0
     if is_company_page: #logic for company pages only - target state
-        print("idenitfy logic!!", len(existing_jobs), len(postings_to_add))
         #identify new jobs in the new scraped postings
         for key, value in postings_to_add.items():
             job_found_in_existing = False
