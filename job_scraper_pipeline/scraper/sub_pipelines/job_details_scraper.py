@@ -7,7 +7,6 @@ PARENT_DIRECTORY_PATH = "data/new_production"
 airtable_api_key = ''
 airtable_table = ''
 details_errors = []
-jobs_deactivated_count = 0
 
 
 def fetch_job_details_with_retry(url, job_title, headers, company_name, run_log_file_path, max_retries=2):
@@ -40,10 +39,8 @@ def fetch_job_details_with_retry(url, job_title, headers, company_name, run_log_
 
 
 
-def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count_in, new_jobs, jobs_to_inactivate):
+def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count, new_jobs, jobs_to_inactivate):
     global details_errors
-    global jobs_deactivated_count
-    jobs_deactivated_count = 0
     # Define headers with the custom referrer
     ua=UserAgent()
     hdr = {'User-Agent': ua.random,

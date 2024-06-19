@@ -12,6 +12,7 @@ from .sub_pipelines.dedup_jobs import dedup_jobs
 from .db_requests.update_company import log_company_scrape
 from .db_requests.create_jobs import create_new_jobs_batch as add_new_jobs
 from .sub_pipelines.job_details_to_s3 import job_descriptions_to_s3
+from .sub_pipelines.check_inactive_jobs import deactivate_old_jobs
 
 
 def scrape_jobs(company_name=None):
@@ -42,6 +43,8 @@ def scrape_jobs(company_name=None):
             # create_data_dir(company_name)
             existing_jobs = pull_existing_jobs_for_company(company_name)
             if not a_company['careers_page_url']:
+                company_airtable_deactivated_jobs_count = deactivate_old_jobs(existing_jobs, company_airtable_deactivated_jobs_count)
+                print(company_airtable_deactivated_jobs_count)
                 new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count = get_linkedin_jobs(a_company, browser, run_log_file_path, existing_jobs) 
                 company_airtable_deactivated_jobs_count, new_jobs_full_details =  scrape_job_details(company_name, run_log_file_path, company_airtable_deactivated_jobs_count, new_jobs, jobs_to_inactivate)
 
