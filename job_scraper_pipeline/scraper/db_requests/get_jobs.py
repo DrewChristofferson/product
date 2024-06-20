@@ -15,7 +15,10 @@ def get_formatted_fields(job):
         'years_experience_req': job["fields"]['years_experience_req'] if 'years_experience_req' in job["fields"] else None,
         'raw_jd_uploaded': job["fields"]['raw_jd_uploaded'] if 'raw_jd_uploaded' in job["fields"] else None,
         'job_details_added': job["fields"]['job_details_added'] if 'job_details_added' in job["fields"] else None,
-        'job_details_xpath': job["fields"]['job_details_xpath'] if 'job_details_xpath' in job["fields"] else None
+        'job_details_xpath': job["fields"]['job_details_xpath'] if 'job_details_xpath' in job["fields"] else None,
+        'preferred_qualifications': job["fields"]['preferred_qualifications'] if 'preferred_qualifications' in job["fields"] else None,
+        'minimum_qualifications': job["fields"]['minimum_qualifications'] if 'minimum_qualifications' in job["fields"] else None,
+        'job_responsibilities': job["fields"]['job_responsibilities'] if 'job_responsibilities' in job["fields"] else None
     }
     return(fields)
 

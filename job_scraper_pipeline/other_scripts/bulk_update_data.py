@@ -542,17 +542,21 @@ def get_text_fields(company_name):
             job_responsibilities_text = ""
             min_qualifications_text = ""
             preferred_qualifications_text = ""
-            for responsibility in job['job_responsibilities']:
-                job_responsibilities_text += f"{responsibility}. "
-            for min_qual in job['minimum_qualifications']:
-                min_qualifications_text += f"{min_qual}. "
-            for preferred_qual in job['preferred_qualifications']:
-                preferred_qualifications_text += f"{preferred_qual}. "
+            if job['job_responsibilities']:
+                for responsibility in job['job_responsibilities']:
+                    job_responsibilities_text += f"{responsibility}. "
+            if job['minimum_qualifications']:
+                for min_qual in job['minimum_qualifications']:
+                    min_qualifications_text += f"{min_qual}. "
+            if job['preferred_qualifications']:
+                for preferred_qual in job['preferred_qualifications']:
+                    preferred_qualifications_text += f"{preferred_qual}. "
 
             fields_to_update['preferred_qualifications_text'] = preferred_qualifications_text
             fields_to_update['min_qualifications_text'] = min_qualifications_text
             fields_to_update['job_responsibilities_text'] = job_responsibilities_text
-        update_job(job["id"], fields_to_update)
+            update_job(job["id"], fields_to_update)
+            print("updated job: ", job['id'])
 
 
 def upload_imgs_to_s3():

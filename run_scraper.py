@@ -5,7 +5,7 @@ import argparse
 from job_scraper_pipeline.scraper.job_scraper import scrape_jobs
 from job_scraper_pipeline.scraper.testing.test_scrape import test_scrape
 from job_scraper_pipeline.scraper.fmp.test_fmp import test_fmp
-from job_scraper_pipeline.other_scripts.bulk_update_data import upload_imgs_to_airtable, onboard_company, update_company_fields, job_descriptions_to_s3, read_s3_job, get_job_posting_data, get_logos, clean_images, upload_imgs_to_s3, get_airtable_logos
+from job_scraper_pipeline.other_scripts.bulk_update_data import upload_imgs_to_airtable, onboard_company, update_company_fields, job_descriptions_to_s3, read_s3_job, get_job_posting_data, get_logos, clean_images, upload_imgs_to_s3, get_airtable_logos, get_text_fields
 from companies_to_run import companies_to_run
 from job_scraper_pipeline.scraper.sub_pipelines.job_details_fields_to_airtable import ad_hoc_run
 
@@ -28,6 +28,8 @@ def main(args):
         test_fmp()
     elif args.script == "logos":
         get_logos()
+    elif args.script == "get_text":
+        get_text_fields(args.company_name)
     elif args.script == "analyze_job":
         ad_hoc_run(args.company_name, *args.fields)
     elif args.script == "get-airtable-logos":

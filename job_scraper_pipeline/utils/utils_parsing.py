@@ -305,7 +305,8 @@ def get_experience_number(experience_reqs):
             match = re.search(r'\d+', cleaned_experience_string)
             if match:
                 years = match.group()
-                years = int(years)
+                # now using string so I commented out the posting below
+                # years = int(years)
     else:
         years = None
     return(years)
