@@ -73,11 +73,11 @@ def scrape_job_details(company_name, run_log_file_path, jobs_deactivated_count, 
             new_job["company_linked"] = new_job.pop('company_airtable_id')
             new_job["locations"] = [new_job["location"]]
             new_job["is_active"] = True
-            new_job["min_salary"] = min_salary
-            new_job["max_salary"] = max_salary
+            # new_job["min_salary"] = min_salary
+            # new_job["max_salary"] = max_salary
             new_job["posted_date"] = posted_date
-            new_job["experience_desc"] = experience_requirements[0] if experience_requirements else None
-            new_job["years_experience_req"] = get_experience_number(experience_requirements)
+            # new_job["experience_desc"] = experience_requirements[0] if experience_requirements else None
+            # new_job["years_experience_req"] = get_experience_number(experience_requirements)
             new_job["level"] = get_levels(new_job["job_title"])
             del new_job["company_name"]
             del new_job["job_url"]

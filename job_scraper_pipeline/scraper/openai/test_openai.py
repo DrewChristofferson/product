@@ -59,7 +59,7 @@ JOB_FIELD_DEFINITIONS = {
     'min_base_salary': "Integer of the minimum of the range mentioned (return null if not listed)", 
     'max_base_salary': "Integer of the maximum of the range mentioned (return null if not listed)", 
     'is_equity_offered': "Whether or not equity compensation or stock options are offered for this role (return 'YES' or 'NO', and anything other than a definitive yes should be no)",
-    'years_experience_req': "Integer of the number of years of relevant work expereince required (return null if there's no years experience mentioned)",
+    'years_experience_req': "Integer of the number of years of relevant work expereince required, but  format the value in a String (return null if there's no years experience mentioned)",
     'job_responsibilities': "A list of all the things expected to do in this role",
     'minimum_education_degree_level': "The education degree level required (Choose from null, 'Bachelor', 'Master', 'PhD')",
     'preferred_education_degree_level': "The education degree level preferred (Choose from null, 'Bachelor', 'Master', 'PhD')",
