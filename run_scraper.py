@@ -17,7 +17,7 @@ def main(args):
     print(f"Fields to update: {args.fields}")
 
     if args.script == "jobs":
-        scrape_jobs(args.company_name)
+        scrape_jobs(args.rerun, args.company_name)
     elif args.script == "upload_imgs":
         upload_imgs_to_s3()
     elif args.script == "upload_imgs_airtable":
@@ -58,6 +58,7 @@ if __name__ == "__main__":
     parser.add_argument("script", type=str, help="Script file to run.")
     parser.add_argument("-C", "--filter_companies", nargs='*', default=companies_to_run, type=str, help="Companies to evaluate or take action on.")
     parser.add_argument("-N", "--company_name", nargs='?', type=str, help="Company to pull jobs for.")
+    parser.add_argument('--rerun', action='store_true', help='A boolean to override date check for a rerun (default: False)')
     parser.add_argument("-F", "--fields", nargs='*', help="Your company fields to update.")
     arguments = parser.parse_args()
     print(arguments.script)

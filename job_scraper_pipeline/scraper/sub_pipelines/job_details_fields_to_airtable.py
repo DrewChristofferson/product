@@ -10,12 +10,16 @@ def get_job_posting_data(job, company_name, *fields):
     job_responsibilities_text = ""
     min_qualifications_text = ""
     preferred_qualifications_text = ""
-    for i, responsibility in enumerate(response['job_responsibilities']):
-        job_responsibilities_text += f"{responsibility}. "
-    for i, min_qual in enumerate(response['minimum_qualifications']):
-        min_qualifications_text += f"{min_qual}. "
-    for i, preferred_qual in enumerate(response['preferred_qualifications']):
-        preferred_qualifications_text += f"{preferred_qual}. "
+    if job['job_responsibilities']:
+        for responsibility in job['job_responsibilities']:
+            job_responsibilities_text += f"{responsibility}. "
+    if job['minimum_qualifications']:
+        for min_qual in job['minimum_qualifications']:
+            min_qualifications_text += f"{min_qual}. "
+    if job['preferred_qualifications']:
+        for preferred_qual in job['preferred_qualifications']:
+            preferred_qualifications_text += f"{preferred_qual}. "
+
     response['preferred_qualifications_text'] = preferred_qualifications_text
     response['min_qualifications_text'] = min_qualifications_text
     response['job_responsibilities_text'] = job_responsibilities_text

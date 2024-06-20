@@ -6,7 +6,7 @@ def get_formatted_fields(job):
         'id': job['id'], 
         'job_title': job["fields"]["job_title"], 
         'locations': job["fields"]["locations"], 
-        'is_active': job["fields"]["is_active"], 
+        'is_active': job["fields"]["is_active"] if 'is_active' in job["fields"] else False,
         'company_name': job["fields"]['company_name'], 
         'job_post_url': job["fields"]['job_post_url'], 
         'job_post_linkedin_url': job["fields"]['job_post_linkedin_url'] if 'job_post_linkedin_url' in job["fields"] else None,
@@ -37,10 +37,23 @@ def pull_existing_jobs_for_company(company_name):
 
     return(all_existing_company_jobs)
 
+
+
 def pull_jobs_without_details(company_name):
     all_existing_company_jobs = []
     response = get_airtable_jobs(company_name)
     for job in response:
         if 'is_active' in job["fields"] and 'job_details_added' not in job['fields']:
             all_existing_company_jobs.append(get_formatted_fields(job))
+    return(all_existing_company_jobs)
+
+
+# For main pipeline ----------------
+
+def pull_all_jobs_for_company(company_name):
+    all_existing_company_jobs = []
+    response = get_airtable_jobs(company_name)
+    for job in response:
+        all_existing_company_jobs.append(get_formatted_fields(job))
+
     return(all_existing_company_jobs)

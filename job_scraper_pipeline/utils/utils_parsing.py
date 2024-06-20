@@ -145,11 +145,12 @@ def get_external_url(request_url, headers, company_name, max_retries=2):
     retries = 0
     while retries <= max_retries:
         try:
-            retries += 1
             if company_name in COMPANIES_URL_IN_PARAMETERS:
                 request_url = get_parameter_url(request_url)
             request_url_clean = unquote(request_url)
             response = requests.get(request_url_clean, headers=headers)
+            for key, value in response.headers.items():
+                print(f"{key}: {value}")
             if response.status_code == 200:
                 final_external_url = response.url
                 # Workday urls insert '%5Cu002d' for a dash character. This code replaces it. 
@@ -162,27 +163,34 @@ def get_external_url(request_url, headers, company_name, max_retries=2):
                     final_external_url_cleaned = remove_before_apply(final_external_url_cleaned)    
                 return(final_external_url_cleaned)
             else:
-                print("Error: Unexpected status code for external url:", response.status_code)
+                print("Error: Unexpected status code for external url:", response.status_code, request_url_clean)
                 if company_name in COMPANIES_ON_URL_WHITELIST:
                     return(unquote(request_url))
             
         except requests.RequestException as e:
             # Handle any exceptions that occur during the request
             print("Error: An error occurred during the request for the external url:", e)
+        
+        retries += 1
+
+    print("Max retries exceed to get URL")
+    return None
 
 def assign_field_values(content, headers, company_name):
+    #TODO: refactor, the external url is dead code
+    final_external_url = None
     description = get_element_text(content, "div", "description__text")
     posted_time_ago = get_element_text(content, "span", "posted-time-ago__text")
-    top_container = content.find(class_="top-card-layout__entity-info-container").find("icon")
-    if top_container is not None:
-        external_url_code = content.find(id="applyUrl")
-        if external_url_code:
-            external_url = strip_external_url(external_url_code)
-            final_external_url = get_external_url(external_url, headers, company_name)                        
-        else:
-            final_external_url = None
-    else:
-        final_external_url = None
+    # top_container = content.find(class_="top-card-layout__entity-info-container").find("icon")
+    # if top_container is not None:
+    #     external_url_code = content.find(id="applyUrl")
+    #     if external_url_code:
+    #         external_url = strip_external_url(external_url_code)
+    #         final_external_url = get_external_url(external_url, headers, company_name)                        
+    #     else:
+    #         final_external_url = None
+    # else:
+    #     final_external_url = None
     # Find job summary and criteria details
     criteria_details = content.find_all("li", class_="description__job-criteria-item")
     job_metadata = []
