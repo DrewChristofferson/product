@@ -23,6 +23,8 @@ def get_job_posting_data(job, company_name, *fields):
     response['preferred_qualifications_text'] = preferred_qualifications_text
     response['min_qualifications_text'] = min_qualifications_text
     response['job_responsibilities_text'] = job_responsibilities_text
+    if response['years_experience_req'] == "null":
+        response['years_experience_req'] = None
     del response['preferred_qualifications']
     del response['minimum_qualifications']
     del response['job_responsibilities']
