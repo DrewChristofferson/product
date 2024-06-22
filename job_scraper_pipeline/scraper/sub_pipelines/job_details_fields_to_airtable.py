@@ -10,14 +10,14 @@ def get_job_posting_data(job, company_name, *fields):
     job_responsibilities_text = ""
     min_qualifications_text = ""
     preferred_qualifications_text = ""
-    if job['job_responsibilities']:
-        for responsibility in job['job_responsibilities']:
+    if response['job_responsibilities']:
+        for responsibility in response['job_responsibilities']:
             job_responsibilities_text += f"{responsibility}. "
-    if job['minimum_qualifications']:
-        for min_qual in job['minimum_qualifications']:
+    if response['minimum_qualifications']:
+        for min_qual in response['minimum_qualifications']:
             min_qualifications_text += f"{min_qual}. "
-    if job['preferred_qualifications']:
-        for preferred_qual in job['preferred_qualifications']:
+    if response['preferred_qualifications']:
+        for preferred_qual in response['preferred_qualifications']:
             preferred_qualifications_text += f"{preferred_qual}. "
 
     response['preferred_qualifications_text'] = preferred_qualifications_text

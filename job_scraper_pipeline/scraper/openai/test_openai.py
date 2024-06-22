@@ -90,7 +90,6 @@ def synthesize_job_posting(job_posting, company_name, job_title, *fields):
             fields_str += f"{field}: {JOB_FIELD_DEFINITIONS[field]},"
     else:
         fields_str = JOB_FIELD_DEFINITIONS
-    
     client = set_open_config()
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
