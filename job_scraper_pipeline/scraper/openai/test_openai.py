@@ -241,8 +241,7 @@ def make_company_info_request(company_name, company_website):
 
 
 
-    # Old functions
-
+# Need to just calculate 
 def test_openai(job_posting):
     client = set_open_config()
 
@@ -250,7 +249,18 @@ def test_openai(job_posting):
     model="gpt-3.5-turbo",
     messages=[
         {"role": "system", "content": 
-        f"Your job is to take a job posting and synthesize it into a JSON format (please don't include '\n' in the json) with the following fields - job_title: String name of job role, posted_date: Date for when the job was posted (for reference, today's date is {datetime.now()}) in python datetime type, locations: A list of all locations for the job, specifying the city and state (an example format is 'San Francisco, CA', don't include country!), job_summary: A paragraph summarizing what product is and what the role is, min_salary: The minimum of the range mentioned, max_salary: The maximum of the range mentioned, years_experience_req: Integer of the number of years required in product management. Also, please make sure your response is valid JSON (e.g., no unnecessary whitespace or non-ASCII characters). If you can't find information for a field, assign a value of null instead. If the date is 30+ days ago, then just use one month from today as the posted_date"
+        f"""
+        Your job is to take a job posting and synthesize it into a JSON format (please don't include '\n' in the json) with the following fields - 
+        job_title: String name of job role, 
+        posted_date: Date for when the job was posted, must be in python datetime type; To calculate the date it was posted, note that today's date is {datetime.now()}; A description like 'Posted 30+ Days Ago' should just be 30 days before today's date; it is impossible for a job to be posted in the future, 
+        locations: A list of all locations for the job, specifying the city and state (an example format is 'San Francisco, CA', don't include country!), 
+        min_salary: The minimum of the range mentioned, 
+        max_salary: The maximum of the range mentioned, 
+        years_experience_req: Integer of the number of years required in product management. 
+        
+        Also, please make sure your response is valid JSON (e.g., no unnecessary whitespace or non-ASCII characters). If you can't find information for a field, assign a value of null instead. If the date is 30+ days ago, then just use one month from today as the posted_date
+
+        """
         },
         {"role": "user", "content": job_posting}
     ]

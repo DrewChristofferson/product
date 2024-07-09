@@ -80,11 +80,10 @@ def fetch_job_details_with_retry(url, job_title, headers, company_name, containe
     min_salary = job_details['min_salary'] if job_details['min_salary'] != 'null' else None
     max_salary = job_details['max_salary'] if job_details['max_salary'] != 'null' else None
     years_experience_req = job_details['years_experience_req'] if job_details['years_experience_req'] != 'null' else None
-    job_summary = job_details['job_summary'] if job_details['job_summary'] != 'null' else None
     posted_date = job_details['posted_date'] if job_details['posted_date'] != 'null' else None
     locations = job_details['locations'] if job_details['locations'] != 'null' else None
 
-    return(min_salary, max_salary, years_experience_req, job_summary, posted_date, locations, True)
+    return(min_salary, max_salary, years_experience_req, posted_date, locations, True)
 
     
     # else:
@@ -112,7 +111,7 @@ def scrape_job_details_company(company, company_name, run_log_file_path, jobs_de
     for job_to_inactivate in jobs_to_inactivate:
         jobs_deactivated_count = deactivate_airtable_record(job_to_inactivate['id'], jobs_deactivated_count)
     for new_job in new_jobs:
-        min_salary, max_salary, years_experience_req, summary, posted_date, locations, is_scrape_successful = fetch_job_details_with_retry(new_job['job_url'], new_job['job_title'], hdr, new_job['company_name'], company['job_details_xpath'], run_log_file_path, browser)
+        min_salary, max_salary, years_experience_req, posted_date, locations, is_scrape_successful = fetch_job_details_with_retry(new_job['job_url'], new_job['job_title'], hdr, new_job['company_name'], company['job_details_xpath'], run_log_file_path, browser)
         if is_scrape_successful:
             new_job["job_post_url"] = new_job['job_url']
             new_job["job_post_linkedin_url"] = None
