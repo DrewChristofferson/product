@@ -5,7 +5,7 @@ def get_formatted_fields(job):
     fields =  {
         'id': job['id'], 
         'job_title': job["fields"]["job_title"], 
-        'locations': job["fields"]["locations"], 
+        'locations': job["fields"]["locations"] if 'locations' in job["fields"] else None, 
         'is_active': job["fields"]["is_active"] if 'is_active' in job["fields"] else False,
         'company_name': job["fields"]['company_name'], 
         'job_post_url': job["fields"]['job_post_url'], 
