@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 import time
 from .utils_general import log  
 
@@ -49,6 +49,8 @@ def open_selenium_driver(driver, url, company_name=None, run_log_file_path=None,
 
 def scroll_to_all_job_listings(browser):
     while True:
+        close_popup_if_present(browser)
+
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         browser.execute_script("window.scrollBy(0, -200);")
         try:
@@ -70,6 +72,20 @@ def scroll_to_all_job_listings(browser):
             pass
         # print("Element not found, scrolling down...")
 
+
+
+def close_popup_if_present(browser):
+    try:
+        # Check if the popup's close button is present
+        popup_close_button = browser.find_element(By.CLASS_NAME, "contextual-sign-in-modal__modal-dismiss")  # Replace with the actual class or selector
+        popup_close_button.click()
+        print("Popup closed successfully!")
+    except NoSuchElementException:
+        # Popup is not present, continue scraping
+        pass
+    except ElementNotInteractableException:
+        # Popup close button is not interactable (likely already closed or hidden)
+        pass
 
 def check_if_element_exists(type, html, criteria=None):
     try:

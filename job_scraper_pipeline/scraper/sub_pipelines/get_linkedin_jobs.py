@@ -1,6 +1,6 @@
 import time
 from .identify_inactive_jobs import identify_inactive_jobs
-from ...utils.utils_selenium import open_selenium_driver, scroll_to_all_job_listings, detemine_job_listing_validity, check_if_element_exists
+from ...utils.utils_selenium import open_selenium_driver, scroll_to_all_job_listings, detemine_job_listing_validity, check_if_element_exists, close_popup_if_present
 from ...utils.utils_parsing import parse_job_listing
 from selenium.webdriver.common.by import By
 
@@ -36,3 +36,4 @@ def get_linkedin_jobs(company, browser, run_log_file_path, existing_company_jobs
     # else:
     #     print("No jobs at this company")
     return(new_jobs, jobs_to_inactivate, company_airtable_reactivated_jobs_count)
+

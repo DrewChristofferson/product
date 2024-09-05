@@ -27,6 +27,7 @@ def scrape_jobs(rerun_setting, company_name=None):
 
     for a_company in companies:
         company_name = a_company['name']
+        print(f"Scraping jobs for {company_name}")
         date_last_scraped = a_company['Last Scrape Date']
         company_airtable_id = a_company['airtable_id']
         company_airtable_jobs_count = 0
