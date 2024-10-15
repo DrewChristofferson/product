@@ -5,14 +5,18 @@ from ..utils.utils_selenium import set_up_selenium_browser
 from .sub_pipelines.job_details_scraper import scrape_job_details
 from .sub_pipelines.job_details_scraper_company import scrape_job_details_company
 from .sub_pipelines.get_company_page_jobs import get_company_page_jobs
-from .db_requests.get_jobs import pull_all_jobs_for_company
 from .sub_pipelines.get_linkedin_jobs import get_linkedin_jobs
-from .db_requests.get_companies import pull_companies
 from .sub_pipelines.dedup_jobs import dedup_jobs
-from .db_requests.update_company import log_company_scrape
-from .db_requests.create_jobs import create_new_jobs_batch as add_new_jobs
 from .sub_pipelines.job_details_to_s3 import job_descriptions_to_s3
 from .sub_pipelines.check_inactive_jobs import deactivate_old_jobs
+from .db_requests.get_jobs import pull_all_jobs_for_company
+from .db_requests.get_companies import pull_companies
+from .db_requests.update_company import log_company_scrape
+from .db_requests.create_jobs import create_new_jobs_batch as add_new_jobs
+# from .db_requests.get_db_jobs import pull_all_jobs_for_company
+# from .db_requests.get_db_companies import pull_companies
+# from .db_requests.update_db_company import log_company_scrape
+# from .db_requests.create_db_jobs import create_new_jobs_batch as add_new_jobs
 
 
 def scrape_jobs(rerun_setting, company_name=None):

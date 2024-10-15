@@ -50,10 +50,12 @@ GPT_ROLE_JOBS = """
 JOB_FIELD_DEFINITIONS = {
     'is_remote': "Whether the job is or can be a remote position (return 'YES' or 'NO', if remote work is not mentioned put 'NO')",
     'is_people_manager': "Whether the role includes responsibilities managing other people or not (return 'YES' or 'NO', if management responsibilities are not mentioned put 'NO')",
+    'posted_date': f"Date for when the job was posted, must be in python datetime type; To calculate the date it was posted, note that today's date is {datetime.now()}; A description like 'Posted 30+ Days Ago' should just be 30 days before today's date; it is impossible for a job to be posted in the future", 
+    'locations': "A list of all locations for the job, specifying the city and state (an example format is 'San Francisco, CA', don't include country!)", 
     'product_name': "The name of the product or a very short description of the product that this role is for",
     'product_summary': "A paragraph summarizing first what the product is and then how the person in this role will impact the product.", 
     'key_stakeholders': "A list of all the stakeholder teams mentioned that the person in this role will work with (Choose from 'Engineering', 'Design', 'Marketing', 'Sales', 'Data Science', 'Customer Support', 'Finance', 'Business', 'Legal', 'Operations'",
-    'minimum_qualifications': "A list of all the qualifications that a candidate should have",
+    'minimum_qualifications': "A list of all the basic qualifications that a candidate should have. Leave out any qualifications that are preferred.",
     'preferred_qualifications': "A list of all the qualifications that are preferred or nice-to-haves (there should be no overlap with the minimum_qualifications)",
     'product_type': "Whether it's an internal or customer-facing product (return 'Internal' or 'Customer-facing')",
     'min_base_salary': "Integer of the minimum of the range mentioned (return null if not listed)", 

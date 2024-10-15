@@ -1,5 +1,6 @@
 from .utils_general import create_job_unique_code
 from datetime import datetime, timedelta
+import pytz
 import requests
 from urllib.parse import unquote
 import re
@@ -7,6 +8,8 @@ import time
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from fake_useragent import UserAgent
+from .get_location_id import get_location_id
+from ..scraper.db_requests.get_db_levels import pull_all_levels
 
 
 
@@ -30,6 +33,23 @@ COMPANIES_SPLIT_APPLY = [
     "Plaid"
 
 ]
+
+def parse_job_listing_new(job_listing, company_id, company_name):
+    job_title = job_listing.find_element(By.CLASS_NAME, "base-search-card__title").text
+    company_id = company_id
+    location = job_listing.find_element(By.CLASS_NAME, "job-search-card__location").text
+    location_id = get_location_id(location)
+    job_url = job_listing.find_element(By.CLASS_NAME, "base-card__full-link").get_attribute('href')
+    job_id = create_job_unique_code([job_title, company_name, location])
+    job_formatted = {
+        "title": job_title,
+        "company_name": company_name,
+        "company_id": company_id,
+        "location": location_id,
+        "job_url": job_url,
+        "is_active": True,
+    }
+    return(job_formatted)
 
 def parse_job_listing(job_listing, company_airtable_id, company_name):
     job_title = job_listing.find_element(By.CLASS_NAME, "base-search-card__title").text
@@ -210,6 +230,24 @@ def assign_field_values(content, headers, company_name):
         salary = None
     return(salary, description, posted_time_ago, cleaned_experience_requirements, job_metadata, final_external_url, True)
 
+def get_hours_since_midnight():
+    # Define the EST timezone
+    est = pytz.timezone('US/Eastern')
+
+    # Get the current time in EST
+    current_time_est = datetime.now(est)
+
+    # Get the midnight of the current day in EST
+    midnight_est = current_time_est.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    # Calculate the difference between the current time and midnight
+    time_difference = current_time_est - midnight_est
+
+    # Get the number of hours since midnight
+    hours_since_midnight = time_difference.total_seconds() / 3600
+
+    return hours_since_midnight
+
 def get_element_text(html, tag, class_name):
     if html.find(tag, class_=class_name):
         return html.find(tag, class_=class_name).text.strip()
@@ -233,24 +271,32 @@ def clean_salary(salary_range):
     return(min_salary, max_salary, pay_schedule)
 
 def get_date(posted_time_ago):
+    print("posted time ago", posted_time_ago)
     match = re.search(r'\d+', posted_time_ago)
     number_in_str = None
     if match:
         number_in_str = int(match.group())
             # day = 1, week = 2, month = 3
         if 'hour' in posted_time_ago or 'min' in posted_time_ago or 'sec' in posted_time_ago:
-            days_since = 1
+            if 'hour' in posted_time_ago:
+                if number_in_str <= get_hours_since_midnight():
+                    days_since = 0
+                else:
+                    days_since = 1
+            else:
+                days_since = 1
         elif 'day' in posted_time_ago:
-            days_since = number_in_str + 1
+            days_since = number_in_str
         elif 'week' in posted_time_ago:
-            days_since = (number_in_str * 7) + 1
+            days_since = (number_in_str * 7)
         elif 'month' in posted_time_ago:
-            days_since = (number_in_str * 30) + 1
+            days_since = (number_in_str * 30)
         else:
             return(None)
 
         calculated_date = datetime.today() - timedelta(days=days_since)
         formatted_date = calculated_date.strftime("%m-%d-%Y")
+        print("formatted date", formatted_date)
         return(formatted_date)
     else:
         return(None)
@@ -269,38 +315,124 @@ def get_levels(job_title):
     job_title_lower_case = job_title.lower()
     if 'intern ' in job_title_lower_case or 'internship' in job_title_lower_case or 'associate product manager intern' in job_title_lower_case or 'apm intern' in job_title_lower_case:
         level = 'Intern Product Manager'
+        level_id = 1
     elif 'senior associate' in job_title_lower_case or 'sr associate' in job_title_lower_case:
         level = 'Senior Associate Product Manager'
+        level_id = 3
     elif 'iii' in job_title_lower_case:
         level = 'Product Manager III'
+        level_id = 7
     elif 'ii' in job_title_lower_case:
         level = 'Product Manager II'
+        level_id = 6
     elif 'associate' in job_title_lower_case:
         level = 'Associate Product Manager'
-    # elif 'technical' in job_title_lower_case:
-    #     print("technical pm!", job_title)
-    #     value['level'] = 'Technical'
+        level_id = 2
     elif 'senior group' in job_title_lower_case or 'sr group' in job_title_lower_case:
         level = 'Senior Group Product Manager'
+        level_id = 12
     elif 'senior staff' in job_title_lower_case or 'sr staff' in job_title_lower_case:
         level = 'Senior Staff Product Manager'
+        level_id = 15
     elif 'senior principal' in job_title_lower_case or 'sr princical' in job_title_lower_case:
         level = 'Senior Principal Product Manager'
+        level_id = 13
     elif 'senior lead' in job_title_lower_case or 'sr lead' in job_title_lower_case:
         level = 'Senior Lead Product Manager'
+        level_id = 14
     elif 'principal' in job_title_lower_case:
         level = 'Principal Product Manager'
+        level_id = 11
     elif 'lead' in job_title_lower_case:
         level = 'Lead Product Manager'
+        level_id = 9
     elif 'staff' in job_title_lower_case:
         level = 'Staff Product Manager'
+        level_id = 19
     elif 'group' in job_title_lower_case:
         level = 'Group Product Manager'
+        level_id = 10
     elif 'senior' in job_title_lower_case or 'sr' in job_title_lower_case:
         level = 'Senior Product Manager'
+        level_id = 8
     else:
         level = 'Product Manager'
+        level_id = 5
     return(level)
+
+def get_level_id(job_title):
+    levels = pull_all_levels()
+    level = ''
+    level_id = None
+    job_title_lower_case = job_title.lower()
+    if 'intern ' in job_title_lower_case or 'internship' in job_title_lower_case or 'associate product manager intern' in job_title_lower_case or 'apm intern' in job_title_lower_case:
+        level = 'Intern Product Manager'
+        level_id = 1
+    elif 'senior associate' in job_title_lower_case or 'sr associate' in job_title_lower_case:
+        level = 'Senior Associate Product Manager'
+        level_id = 3
+    elif 'iii' in job_title_lower_case:
+        level = 'Product Manager III'
+        level_id = 7
+    elif 'ii' in job_title_lower_case:
+        level = 'Product Manager II'
+        level_id = 6
+    elif 'associate' in job_title_lower_case:
+        level = 'Associate Product Manager'
+        level_id = 2
+    elif 'vp' in job_title_lower_case or 'vice president' in job_title_lower_case:
+        level = 'VP of Product'
+        level_id = 17
+    elif 'cpo' in job_title_lower_case or 'chief product' in job_title_lower_case:
+        level = 'Chief Product Officer'
+        level_id = 18
+    elif 'director' in job_title_lower_case:
+        level = 'Director of Product Management'
+        level_id = 16
+    elif 'senior group' in job_title_lower_case or 'sr group' in job_title_lower_case:
+        level = 'Senior Group Product Manager'
+        level_id = 12
+    elif 'senior staff' in job_title_lower_case or 'sr staff' in job_title_lower_case:
+        level = 'Senior Staff Product Manager'
+        level_id = 15
+    elif 'senior principal' in job_title_lower_case or 'sr princical' in job_title_lower_case:
+        level = 'Senior Principal Product Manager'
+        level_id = 13
+    elif 'senior lead' in job_title_lower_case or 'sr lead' in job_title_lower_case:
+        level = 'Senior Lead Product Manager'
+        level_id = 14
+    elif 'principal' in job_title_lower_case:
+        level = 'Principal Product Manager'
+        level_id = 11
+    elif 'lead' in job_title_lower_case:
+        level = 'Lead Product Manager'
+        level_id = 9
+    elif 'staff' in job_title_lower_case:
+        level = 'Staff Product Manager'
+        level_id = 19
+    elif 'group' in job_title_lower_case:
+        level = 'Group Product Manager'
+        level_id = 10
+    elif 'senior' in job_title_lower_case or 'sr' in job_title_lower_case:
+        level = 'Senior Product Manager'
+        level_id = 8
+    else:
+        level = 'Product Manager'
+        level_id = 5
+    return(level_id)
+
+def get_sub_dept_id(job_title):
+    job_title_lower_case = job_title.lower()
+    sub_department_id = None
+    if 'growth' in job_title_lower_case:
+        sub_department_id = 1
+    elif 'artificial intelligence' in job_title_lower_case or 'ai' in job_title_lower_case or 'machine learning' in job_title_lower_case or 'ml' in job_title_lower_case:
+        sub_department_id = 4
+    elif 'technical' in job_title_lower_case:
+        sub_department_id = 2
+    elif 'data' in job_title_lower_case:
+        sub_department_id = 3
+    return(sub_department_id)
 
 
 def get_experience_number(experience_reqs):
@@ -341,3 +473,23 @@ def has_integer_and_word_experience(string):
 
     # Return True if both are found, otherwise False
     return bool(match1) and bool(match2)
+
+def is_internship(title):
+    title_lowercase = title.lower()
+    if 'intern' in title_lowercase or 'internship' in title_lowercase:
+        if 'international' not in title_lowercase:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def is_new_grad(title):
+    title_lowercase = title.lower()
+    if 'new grad' in title_lowercase or 'university grad' in title_lowercase or '2025' in title_lowercase or '2026' in title_lowercase:
+        if 'intern' not in title_lowercase:
+            return True
+        else:
+            return False
+    else:
+        return False
