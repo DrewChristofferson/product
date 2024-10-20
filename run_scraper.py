@@ -19,7 +19,7 @@ def main(args):
 
     if args.script == "jobs":
         scrape_jobs(args.rerun, args.company_name)
-    if args.script == "jobs_db":
+    elif args.script == "jobs_db":
         scrape_db_jobs(args.rerun, args.company_name)
     elif args.script == "upload_imgs":
         upload_imgs_to_s3()
