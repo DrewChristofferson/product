@@ -12,7 +12,7 @@ def dedup_jobs(company_name, new_jobs, existing_jobs):
             else:
                 if (new_job['job_title'] == existing_job['job_title'] and
                     new_job['years_experience_req'] == existing_job['years_experience_req'] and
-                    new_job['locations'][0] not in existing_job['locations']):
+                    new_job['locations'][0] not in (existing_job['locations'] if existing_job['locations'] else [])):
                     
                     add_loc_to_existing_job(new_job['locations'][0], existing_job)
                     new_jobs.pop(i)
