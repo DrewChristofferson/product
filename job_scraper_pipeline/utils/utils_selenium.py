@@ -17,7 +17,7 @@ def set_up_selenium_browser():
     # Set up Chrome options
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--referer=" + CUSTOM_REFERER)
-    # chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--headless=new")
     # Instantiate the Chrome driver with the custom options
     browser = webdriver.Chrome(options=chrome_options)
     return browser
